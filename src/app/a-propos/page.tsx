@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Eye, Globe2, Users, Building2, Heart, ArrowRight } from "lucide-react";
 
 export const metadata = {
-  title: "À propos — OCD",
+  title: "À propos",
   description: "La plateforme panafricaine qui rend les talents visibles.",
 };
 
@@ -67,7 +67,7 @@ export default function AboutPage() {
       </section>
 
       <section className="container-bovan pb-20">
-        <div className="bg-gradient-to-br from-[#0a0a0a] to-[#262626] text-white rounded-3xl p-10 md:p-16 text-center">
+        <div className="bg-linear-to-br from-[#0a0a0a] to-[#262626] text-white rounded-3xl p-10 md:p-16 text-center">
           <h2 className="heading-2 text-white">
             Les opportunités
             <br />

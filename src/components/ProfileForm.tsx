@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Loader2, Plus, X, Check } from "lucide-react";
+import { Loader2, Plus, X, Check, Camera } from "lucide-react";
+import { initials } from "@/lib/utils";
 
 interface Country {
   id: string;
@@ -32,6 +34,10 @@ export function ProfileForm({ talent, user, countries, allSkills, initialSkills 
   const [error, setError] = useState<string | null>(null);
   const [selectedSkills, setSelectedSkills] = useState<string[]>(initialSkills);
   const [skillInput, setSkillInput] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(
+    user?.avatarUrl || null
+  );
+  const [avatarLoading, setAvatarLoading] = useState(false);
 
   const [form, setForm] = useState({
     firstName: user?.firstName || "",
@@ -69,6 +75,30 @@ export function ProfileForm({ talent, user, countries, allSkills, initialSkills 
     }
   }
 
+  async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setAvatarLoading(true);
+    setError(null);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("kind", "avatar");
+      const res = await fetch("/api/upload", { method: "POST", body: fd });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Erreur lors de l'upload de la photo.");
+      } else {
+        setAvatarUrl(data.url);
+      }
+    } catch {
+      setError("Erreur réseau lors de l'upload.");
+    } finally {
+      setAvatarLoading(false);
+      e.target.value = "";
+    }
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
@@ -80,6 +110,7 @@ export function ProfileForm({ talent, user, countries, allSkills, initialSkills 
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...form,
+          avatarUrl,
           yearsExperience: parseInt(form.yearsExperience.toString()) || 0,
           salaryExpectation: form.salaryExpectation
             ? parseInt(form.salaryExpectation.toString())
@@ -104,20 +135,65 @@ export function ProfileForm({ talent, user, countries, allSkills, initialSkills 
 
   return (
     <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-6 md:p-8 border border-[#e5e5e5] space-y-6">
+      <div className="flex items-center gap-5 pb-6 border-b border-[#f1f1f1]">
+        <div className="relative w-20 h-20 rounded-full overflow-hidden bg-linear-to-br from-[#f47b00] to-[#c56200] flex items-center justify-center text-white text-2xl font-bold shrink-0">
+          {avatarUrl ? (
+            <Image
+              src={avatarUrl}
+              alt="Photo de profil"
+              fill
+              sizes="80px"
+              className="object-cover"
+            />
+          ) : (
+            initials(form.firstName, form.lastName)
+          )}
+        </div>
+        <div>
+          <label
+            htmlFor="avatar"
+            className="btn-light inline-flex cursor-pointer items-center gap-2"
+          >
+            {avatarLoading ? (
+              <Loader2 aria-hidden="true" className="w-4 h-4 animate-spin" />
+            ) : (
+              <Camera aria-hidden="true" className="w-4 h-4" />
+            )}
+            {avatarLoading ? "Envoi…" : "Changer la photo"}
+          </label>
+          <input
+            id="avatar"
+            name="avatar"
+            type="file"
+            accept="image/png,image/jpeg,image/webp,image/gif"
+            className="sr-only"
+            onChange={handleAvatarChange}
+            disabled={avatarLoading}
+          />
+          <p className="helper mt-1">JPG, PNG, WEBP ou GIF · 5 Mo max.</p>
+        </div>
+      </div>
+
       <div className="grid md:grid-cols-2 gap-4">
         <div>
-          <label className="label">Prénom</label>
+          <label className="label" htmlFor="firstName">Prénom</label>
           <input
+            id="firstName"
+            name="firstName"
             type="text"
+            autoComplete="given-name"
             value={form.firstName}
             onChange={(e) => update("firstName", e.target.value)}
             className="input"
           />
         </div>
         <div>
-          <label className="label">Nom</label>
+          <label className="label" htmlFor="lastName">Nom</label>
           <input
+            id="lastName"
+            name="lastName"
             type="text"
+            autoComplete="family-name"
             value={form.lastName}
             onChange={(e) => update("lastName", e.target.value)}
             className="input"
@@ -126,43 +202,51 @@ export function ProfileForm({ talent, user, countries, allSkills, initialSkills 
       </div>
 
       <div>
-        <label className="label">Titre professionnel *</label>
+        <label className="label" htmlFor="headline">Titre professionnel *</label>
         <input
+          id="headline"
+          name="headline"
           required
           type="text"
           value={form.headline}
           onChange={(e) => update("headline", e.target.value)}
           className="input"
-          placeholder="ex: Développeur Web Full Stack"
+          placeholder="ex : Développeur Web Full Stack"
         />
         <p className="helper">Une phrase qui dit qui vous êtes.</p>
       </div>
 
       <div>
-        <label className="label">Profession / Métier</label>
+        <label className="label" htmlFor="profession">Profession / Métier</label>
         <input
+          id="profession"
+          name="profession"
           type="text"
           value={form.profession}
           onChange={(e) => update("profession", e.target.value)}
           className="input"
-          placeholder="ex: Développeur, Designer, Marketing..."
+          placeholder="ex : Développeur, Designer, Marketing…"
         />
       </div>
 
       <div>
-        <label className="label">À propos</label>
+        <label className="label" htmlFor="biography">À propos</label>
         <textarea
+          id="biography"
+          name="biography"
           value={form.biography}
           onChange={(e) => update("biography", e.target.value)}
           className="input min-h-[140px] resize-y"
-          placeholder="Présentez-vous, vos expériences, votre vision..."
+          placeholder="Présentez-vous, vos expériences, votre vision…"
         />
       </div>
 
       <div className="grid md:grid-cols-2 gap-4">
         <div>
-          <label className="label">Disponibilité *</label>
+          <label className="label" htmlFor="availability">Disponibilité *</label>
           <select
+            id="availability"
+            name="availability"
             value={form.availability}
             onChange={(e) => update("availability", e.target.value)}
             className="select"
@@ -176,8 +260,10 @@ export function ProfileForm({ talent, user, countries, allSkills, initialSkills 
           </select>
         </div>
         <div>
-          <label className="label">Niveau d&apos;expérience</label>
+          <label className="label" htmlFor="experienceLevel">Niveau d&apos;expérience</label>
           <select
+            id="experienceLevel"
+            name="experienceLevel"
             value={form.experienceLevel}
             onChange={(e) => update("experienceLevel", e.target.value)}
             className="select"
@@ -195,8 +281,10 @@ export function ProfileForm({ talent, user, countries, allSkills, initialSkills 
 
       <div className="grid md:grid-cols-3 gap-4">
         <div>
-          <label className="label">Années d&apos;expérience</label>
+          <label className="label" htmlFor="yearsExperience">Années d&apos;expérience</label>
           <input
+            id="yearsExperience"
+            name="yearsExperience"
             type="number"
             min="0"
             value={form.yearsExperience}
@@ -205,18 +293,22 @@ export function ProfileForm({ talent, user, countries, allSkills, initialSkills 
           />
         </div>
         <div>
-          <label className="label">Prétention salariale</label>
+          <label className="label" htmlFor="salaryExpectation">Prétention salariale</label>
           <input
+            id="salaryExpectation"
+            name="salaryExpectation"
             type="number"
             value={form.salaryExpectation}
             onChange={(e) => update("salaryExpectation", e.target.value)}
             className="input"
-            placeholder="ex: 25000"
+            placeholder="ex : 25000"
           />
         </div>
         <div>
-          <label className="label">Devise</label>
+          <label className="label" htmlFor="currency">Devise</label>
           <select
+            id="currency"
+            name="currency"
             value={form.currency}
             onChange={(e) => update("currency", e.target.value)}
             className="select"
@@ -233,8 +325,10 @@ export function ProfileForm({ talent, user, countries, allSkills, initialSkills 
 
       <div className="grid md:grid-cols-2 gap-4">
         <div>
-          <label className="label">Mode de travail préféré</label>
+          <label className="label" htmlFor="remotePreference">Mode de travail préféré</label>
           <select
+            id="remotePreference"
+            name="remotePreference"
             value={form.remotePreference}
             onChange={(e) => update("remotePreference", e.target.value)}
             className="select"
@@ -246,15 +340,15 @@ export function ProfileForm({ talent, user, countries, allSkills, initialSkills 
           </select>
         </div>
         <div>
-          <label className="label">Pays</label>
-          <select className="select" disabled>
+          <label className="label" htmlFor="countryIso2">Pays</label>
+          <select id="countryIso2" name="countryIso2" className="select" disabled>
             <option>À définir (bientôt modifiable)</option>
           </select>
         </div>
       </div>
 
       <div>
-        <label className="label">Compétences</label>
+        <label className="label" htmlFor="skillInput">Compétences</label>
         {selectedSkills.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-3">
             {selectedSkills.map((s) => (
@@ -266,9 +360,10 @@ export function ProfileForm({ talent, user, countries, allSkills, initialSkills 
                 <button
                   type="button"
                   onClick={() => toggleSkill(s)}
+                  aria-label={`Retirer la compétence ${s}`}
                   className="hover:bg-[#f47b00]/20 rounded-full p-0.5"
                 >
-                  <X className="w-3 h-3" />
+                  <X aria-hidden="true" className="w-3 h-3" />
                 </button>
               </span>
             ))}
@@ -276,6 +371,8 @@ export function ProfileForm({ talent, user, countries, allSkills, initialSkills 
         )}
         <div className="flex gap-2">
           <input
+            id="skillInput"
+            name="skillInput"
             type="text"
             value={skillInput}
             onChange={(e) => setSkillInput(e.target.value)}
@@ -291,9 +388,10 @@ export function ProfileForm({ talent, user, countries, allSkills, initialSkills 
           <button
             type="button"
             onClick={addCustom}
+            aria-label="Ajouter la compétence saisie"
             className="btn-light shrink-0"
           >
-            <Plus className="w-4 h-4" />
+            <Plus aria-hidden="true" className="w-4 h-4" />
           </button>
         </div>
         <div className="mt-3 flex flex-wrap gap-1.5">
@@ -302,6 +400,7 @@ export function ProfileForm({ talent, user, countries, allSkills, initialSkills 
               key={s.id}
               type="button"
               onClick={() => toggleSkill(s.name)}
+              aria-pressed={selectedSkills.includes(s.name)}
               className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
                 selectedSkills.includes(s.name)
                   ? "bg-[#f47b00] text-white border-[#f47b00]"
@@ -318,63 +417,71 @@ export function ProfileForm({ talent, user, countries, allSkills, initialSkills 
         <h3 className="font-semibold mb-3">Liens</h3>
         <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <label className="label">LinkedIn</label>
+            <label className="label" htmlFor="linkedinUrl">LinkedIn</label>
             <input
+              id="linkedinUrl"
+              name="linkedinUrl"
               type="url"
               value={form.linkedinUrl}
               onChange={(e) => update("linkedinUrl", e.target.value)}
               className="input"
-              placeholder="https://linkedin.com/in/..."
+              placeholder="https://linkedin.com/in/…"
             />
           </div>
           <div>
-            <label className="label">GitHub</label>
+            <label className="label" htmlFor="githubUrl">GitHub</label>
             <input
+              id="githubUrl"
+              name="githubUrl"
               type="url"
               value={form.githubUrl}
               onChange={(e) => update("githubUrl", e.target.value)}
               className="input"
-              placeholder="https://github.com/..."
+              placeholder="https://github.com/…"
             />
           </div>
           <div>
-            <label className="label">Site web</label>
+            <label className="label" htmlFor="websiteUrl">Site web</label>
             <input
+              id="websiteUrl"
+              name="websiteUrl"
               type="url"
               value={form.websiteUrl}
               onChange={(e) => update("websiteUrl", e.target.value)}
               className="input"
-              placeholder="https://..."
+              placeholder="https://…"
             />
           </div>
           <div>
-            <label className="label">Portfolio</label>
+            <label className="label" htmlFor="portfolioUrl">Portfolio</label>
             <input
+              id="portfolioUrl"
+              name="portfolioUrl"
               type="url"
               value={form.portfolioUrl}
               onChange={(e) => update("portfolioUrl", e.target.value)}
               className="input"
-              placeholder="https://..."
+              placeholder="https://…"
             />
           </div>
         </div>
       </div>
 
       {error && (
-        <div className="text-sm text-red-600 bg-red-50 px-4 py-3 rounded-xl">
+        <div role="alert" className="text-sm text-red-600 bg-red-50 px-4 py-3 rounded-xl">
           {error}
         </div>
       )}
       {saved && (
-        <div className="text-sm text-emerald-700 bg-emerald-50 px-4 py-3 rounded-xl flex items-center gap-2">
-          <Check className="w-4 h-4" />
+        <div role="status" className="text-sm text-emerald-700 bg-emerald-50 px-4 py-3 rounded-xl flex items-center gap-2">
+          <Check aria-hidden="true" className="w-4 h-4" />
           Profil enregistré avec succès.
         </div>
       )}
 
       <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#f1f1f1]">
         <button type="submit" disabled={loading} className="btn-primary">
-          {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+          {loading ? <Loader2 aria-hidden="true" className="w-4 h-4 animate-spin" /> : <Check aria-hidden="true" className="w-4 h-4" />}
           Enregistrer
         </button>
       </div>

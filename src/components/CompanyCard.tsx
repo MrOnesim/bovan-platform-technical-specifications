@@ -57,7 +57,7 @@ function CompanyLogo({
   }
   return (
     <div
-      className={`${sizeClass} rounded-xl bg-gradient-to-br ${color} flex items-center justify-center text-white font-black`}
+      className={`${sizeClass} rounded-xl bg-linear-to-br ${color} flex items-center justify-center text-white font-black`}
     >
       {initials}
     </div>
@@ -78,14 +78,14 @@ export function CompanyCard({ company }: { company: CompanyCardData }) {
           <h3 className="font-semibold truncate group-hover:text-[#f47b00] transition-colors flex items-center gap-1.5">
             {company.name}
             {company.verification === "VERIFIED" && (
-              <CheckCircle2 className="w-4 h-4 text-[#f47b00] shrink-0" />
+              <CheckCircle2 aria-label="Entreprise vérifiée" className="w-4 h-4 text-[#f47b00] shrink-0" />
             )}
           </h3>
           {company.industry && (
             <p className="text-xs text-[#737373] mt-0.5">{company.industry}</p>
           )}
         </div>
-        <ArrowUpRight className="w-4 h-4 text-[#a3a3a3] group-hover:text-[#f47b00] transition-colors shrink-0" />
+        <ArrowUpRight aria-hidden="true" className="w-4 h-4 text-[#a3a3a3] group-hover:text-[#f47b00] transition-colors shrink-0" />
       </div>
       {company.description && (
         <p className="text-sm text-[#525252] mt-3 line-clamp-2">
@@ -94,11 +94,11 @@ export function CompanyCard({ company }: { company: CompanyCardData }) {
       )}
       <div className="flex items-center justify-between text-xs text-[#737373] mt-4 pt-4 border-t border-[#f1f1f1]">
         <span>
-          {company.countryFlag} {company.countryName}
+          {company.countryFlag && <span aria-hidden="true">{company.countryFlag}</span>} {company.countryName}
         </span>
         {company.opportunitiesCount > 0 && (
           <span className="chip-orange text-[10px]">
-            <Briefcase className="w-3 h-3" />
+            <Briefcase aria-hidden="true" className="w-3 h-3" />
             {company.opportunitiesCount} offre
             {company.opportunitiesCount > 1 ? "s" : ""}
           </span>

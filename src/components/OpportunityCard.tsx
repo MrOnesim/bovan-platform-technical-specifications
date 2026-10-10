@@ -55,7 +55,7 @@ export function OpportunityCard({
             {opportunity.title}
           </h3>
         </div>
-        <ArrowUpRight className="w-4 h-4 text-[#a3a3a3] group-hover:text-[#f47b00] transition-colors shrink-0" />
+        <ArrowUpRight aria-hidden="true" className="w-4 h-4 text-[#a3a3a3] group-hover:text-[#f47b00] transition-colors shrink-0" />
       </div>
 
       <p className="text-sm text-[#525252] line-clamp-2 mb-4">
@@ -64,7 +64,7 @@ export function OpportunityCard({
 
       <div className="flex flex-wrap gap-1.5 mb-4">
         <span className="chip-orange text-[10px]">
-          <Briefcase className="w-3 h-3" />
+          <Briefcase aria-hidden="true" className="w-3 h-3" />
           {employmentTypeLabel(opportunity.employmentType)}
         </span>
         <span className="chip-neutral text-[10px]">
@@ -72,7 +72,7 @@ export function OpportunityCard({
         </span>
         {opportunity.remote && (
           <span className="chip-success text-[10px]">
-            <Globe2 className="w-3 h-3" />
+            <Globe2 aria-hidden="true" className="w-3 h-3" />
             Remote
           </span>
         )}
@@ -98,7 +98,7 @@ export function OpportunityCard({
 
       <div className="flex items-center justify-between text-xs mt-4 pt-4 border-t border-[#f1f1f1]">
         <span className="flex items-center gap-1 text-[#737373]">
-          <MapPin className="w-3 h-3" />
+          <MapPin aria-hidden="true" className="w-3 h-3" />
           {opportunity.location}
         </span>
         {salary && <span className="font-semibold text-[#0a0a0a]">{salary}</span>}

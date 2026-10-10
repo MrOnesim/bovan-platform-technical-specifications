@@ -53,9 +53,12 @@ export default function ContactPage() {
           >
             <h2 className="text-xl font-bold">Envoyer un message</h2>
             <div>
-              <label className="label">Nom</label>
+              <label className="label" htmlFor="contactName">Nom</label>
               <input
+                id="contactName"
+                name="name"
                 type="text"
+                autoComplete="name"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 className="input"
@@ -63,9 +66,13 @@ export default function ContactPage() {
               />
             </div>
             <div>
-              <label className="label">Email</label>
+              <label className="label" htmlFor="contactEmail">Email</label>
               <input
+                id="contactEmail"
+                name="email"
                 type="email"
+                autoComplete="email"
+                spellCheck={false}
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 className="input"
@@ -73,8 +80,10 @@ export default function ContactPage() {
               />
             </div>
             <div>
-              <label className="label">Sujet</label>
+              <label className="label" htmlFor="contactSubject">Sujet</label>
               <input
+                id="contactSubject"
+                name="subject"
                 type="text"
                 value={form.subject}
                 onChange={(e) => setForm({ ...form, subject: e.target.value })}
@@ -83,8 +92,10 @@ export default function ContactPage() {
               />
             </div>
             <div>
-              <label className="label">Message</label>
+              <label className="label" htmlFor="contactMessage">Message</label>
               <textarea
+                id="contactMessage"
+                name="message"
                 value={form.message}
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
                 className="input min-h-[140px] resize-y"
@@ -97,7 +108,7 @@ export default function ContactPage() {
               ) : (
                 <Send className="w-4 h-4" />
               )}
-              {sent ? "Ouverture de votre client mail..." : "Envoyer"}
+              {sent ? "Ouverture de votre client mail…" : "Envoyer"}
             </button>
           </form>
 
@@ -128,7 +139,7 @@ export default function ContactPage() {
                 Pour les organisations et institutions.
               </p>
             </div>
-            <div className="bg-gradient-to-br from-[#f47b00] to-[#c56200] text-white rounded-2xl p-6">
+            <div className="bg-linear-to-br from-[#f47b00] to-[#c56200] text-white rounded-2xl p-6">
               <h3 className="font-bold text-lg">Vous êtes une entreprise ?</h3>
               <p className="text-white/90 text-sm mt-2">
                 Inscrivez-vous et commencez à recevoir des candidatures de

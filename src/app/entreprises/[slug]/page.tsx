@@ -21,6 +21,9 @@ import {
 } from "lucide-react";
 import { CompanyLogo } from "@/components/CompanyCard";
 import { OpportunityCard } from "@/components/OpportunityCard";
+import { ReviewSection } from "@/components/ReviewSection";
+import { canReviewAsTalent, getApprovedReviews } from "@/lib/reviews";
+import { getCurrentUser } from "@/lib/auth";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -95,6 +98,14 @@ export default async function CompanyDetailPage({
   const data = await getCompany(slug);
   if (!data) notFound();
   const { company, opportunities: opps } = data;
+
+  const session = await getCurrentUser();
+  const approvedReviews = await getApprovedReviews("COMPANY", company.id);
+  const canReview = Boolean(
+    session?.user.role === "TALENT" &&
+      session.talent &&
+      (await canReviewAsTalent(session.talent.id, company.id))
+  );
 
   return (
     <div className="bg-[#fafafa] min-h-screen">
@@ -205,6 +216,13 @@ export default async function CompanyDetailPage({
               </div>
             )}
           </div>
+
+          <ReviewSection
+            targetType="COMPANY"
+            targetId={company.id}
+            canReview={canReview}
+            reviews={approvedReviews}
+          />
         </div>
 
         <aside className="space-y-4">

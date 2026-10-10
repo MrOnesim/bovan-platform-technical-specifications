@@ -32,7 +32,7 @@ export function HeroSlogan() {
           C&apos;EST
         </span>
         <span
-          className={`slogan-line slogan-line-3 text-[clamp(3rem,9vw,7rem)] font-black leading-[0.95] tracking-[-0.05em] block transition-all duration-700 ${
+          className={`slogan-line slogan-line-3 text-[clamp(3rem,9vw,7rem)] font-black leading-[0.95] tracking-[-0.05em] block transition duration-700 ${
             stage >= 2 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
           }`}
           style={{ color: "#f47b00" }}
@@ -64,14 +64,14 @@ export function HeroSlogan() {
             className="btn-primary group"
           >
             Je suis un talent
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            <ArrowRight aria-hidden="true" className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
           <Link
             href="/auth/register?role=company"
-            className="btn-ghost"
+            className="btn-ghost group"
           >
             Je suis une entreprise
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            <ArrowRight aria-hidden="true" className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
       )}

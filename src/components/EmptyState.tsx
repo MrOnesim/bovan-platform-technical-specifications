@@ -24,7 +24,7 @@ export function EmptyState({
   return (
     <div className="col-span-full bg-white rounded-2xl border border-[#e5e5e5] px-6 py-14 text-center">
       <div className="w-14 h-14 rounded-full bg-[#f47b00]/10 text-[#f47b00] flex items-center justify-center mx-auto">
-        <SearchX className="w-6 h-6" />
+        <SearchX aria-hidden="true" className="w-6 h-6" />
       </div>
       <h3 className="font-bold text-lg mt-4">{title}</h3>
       <p className="text-[#525252] text-sm mt-2 max-w-md mx-auto leading-relaxed">

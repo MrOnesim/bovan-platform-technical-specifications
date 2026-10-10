@@ -165,7 +165,7 @@ export default async function TalentDashboardPage() {
           <aside className="space-y-2">
             <div className="bg-white rounded-2xl p-5 border border-[#e5e5e5] sticky top-20">
               <div className="flex items-center gap-3 mb-5 pb-5 border-b border-[#f1f1f1]">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#f47b00] to-[#c56200] flex items-center justify-center text-white font-bold">
+                <div className="w-12 h-12 rounded-full bg-linear-to-br from-[#f47b00] to-[#c56200] flex items-center justify-center text-white font-bold">
                   {data.profile?.firstName?.[0]}
                   {data.profile?.lastName?.[0]}
                 </div>
@@ -190,13 +190,14 @@ export default async function TalentDashboardPage() {
                   <Link
                     key={item.label}
                     href={item.href}
+                    aria-current={item.active ? "page" : undefined}
                     className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium ${
                       item.active
                         ? "bg-[#f47b00]/10 text-[#c56200]"
                         : "text-[#525252] hover:bg-[#f1f1f1]"
                     }`}
                   >
-                    <item.icon className="w-4 h-4" />
+                    <item.icon aria-hidden="true" className="w-4 h-4" />
                     {item.label}
                   </Link>
                 ))}
@@ -220,7 +221,7 @@ export default async function TalentDashboardPage() {
             </div>
 
             {/* Profile completion */}
-            <div className="bg-gradient-to-br from-[#f47b00] to-[#c56200] text-white rounded-2xl p-6 relative overflow-hidden">
+            <div className="bg-linear-to-br from-[#f47b00] to-[#c56200] text-white rounded-2xl p-6 relative overflow-hidden">
               <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full" />
               <div className="absolute -right-20 bottom-0 w-60 h-60 bg-white/5 rounded-full" />
               <div className="relative">
@@ -238,7 +239,7 @@ export default async function TalentDashboardPage() {
                 </div>
                 <div className="h-2 bg-white/20 rounded-full overflow-hidden mt-4">
                   <div
-                    className="h-full bg-white rounded-full transition-all"
+                    className="h-full bg-white rounded-full transition-[width]"
                     style={{ width: `${data.stats.completion}%` }}
                   />
                 </div>
@@ -363,7 +364,7 @@ export default async function TalentDashboardPage() {
                   <Link
                     key={o.id}
                     href={`/opportunites/${o.slug}`}
-                    className="bg-white rounded-2xl p-5 border border-[#e5e5e5] hover:border-[#f47b00] transition-all"
+                    className="group bg-white rounded-2xl p-5 border border-[#e5e5e5] hover:border-[#f47b00] transition-colors"
                   >
                     <div className="flex items-start gap-3 mb-3">
                       <CompanyLogo

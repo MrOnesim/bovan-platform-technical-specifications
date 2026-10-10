@@ -28,13 +28,14 @@ export function CompanySidebar({ active, companyName, companyLogo }: Props) {
             <Link
               key={item.key}
               href={item.href}
+              aria-current={active === item.key ? "page" : undefined}
               className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium ${
                 active === item.key
                   ? "bg-[#f47b00]/10 text-[#c56200]"
                   : "text-[#525252] hover:bg-[#f1f1f1]"
               }`}
             >
-              <item.icon className="w-4 h-4" />
+              <item.icon aria-hidden="true" className="w-4 h-4" />
               {item.label}
             </Link>
           ))}

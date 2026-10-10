@@ -13,7 +13,7 @@ export function Logo({ className, variant = "dark", showText = true }: LogoProps
     <div className={cn("flex items-center gap-2", className)}>
       <Image
         src="/brand/logo-mark.svg"
-        alt="OCD"
+        alt={showText ? "" : "OCD"}
         width={857}
         height={335}
         priority

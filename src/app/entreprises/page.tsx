@@ -92,7 +92,7 @@ export default async function CompaniesPage({
         <div className="container-bovan relative">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 chip-orange bg-white/10 text-[#ffb352] ring-white/20 mb-4">
-              <Building2 className="w-3.5 h-3.5" />
+              <Building2 aria-hidden="true" className="w-3.5 h-3.5" />
               {companyList.length} entreprises
             </div>
             <h1 className="heading-1 text-white">
@@ -114,13 +114,15 @@ export default async function CompaniesPage({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <input
               name="q"
-              type="text"
+              type="search"
+              aria-label="Rechercher une entreprise par nom, secteur ou mot-clé"
               defaultValue={params.q}
-              placeholder="Nom, secteur, mot-clé..."
+              placeholder="Nom, secteur, mot-clé…"
               className="input"
             />
             <select
               name="industry"
+              aria-label="Secteur"
               defaultValue={params.industry || ""}
               className="select"
             >
@@ -135,6 +137,7 @@ export default async function CompaniesPage({
             </select>
             <select
               name="country"
+              aria-label="Pays"
               defaultValue={params.country || ""}
               className="select"
             >

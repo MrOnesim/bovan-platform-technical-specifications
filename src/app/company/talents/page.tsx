@@ -111,17 +111,19 @@ export default async function CompanyTalentsPage({
             <form className="bg-white p-4 rounded-2xl border border-[#e5e5e5]">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div className="md:col-span-1 relative">
-                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#a3a3a3]" />
+                  <Search aria-hidden="true" className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#a3a3a3]" />
                   <input
                     name="q"
-                    type="text"
+                    type="search"
+                    aria-label="Rechercher un talent par métier, compétence ou nom"
                     defaultValue={params.q}
-                    placeholder="Métier, compétence, nom..."
+                    placeholder="Métier, compétence, nom…"
                     className="input pl-10"
                   />
                 </div>
                 <select
                   name="country"
+                  aria-label="Pays"
                   defaultValue={params.country || ""}
                   className="select"
                 >
@@ -134,6 +136,7 @@ export default async function CompanyTalentsPage({
                 </select>
                 <select
                   name="availability"
+                  aria-label="Disponibilité"
                   defaultValue={params.availability || ""}
                   className="select"
                 >

@@ -115,8 +115,9 @@ export function MessagingUI({
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-96">
-        <Loader2 className="w-8 h-8 animate-spin text-[#f47b00]" />
+      <div role="status" className="flex items-center justify-center h-96">
+        <Loader2 aria-hidden="true" className="w-8 h-8 animate-spin text-[#f47b00]" />
+        <span className="sr-only">Chargement…</span>
       </div>
     );
   }
@@ -124,16 +125,16 @@ export function MessagingUI({
   /* A failed request must not masquerade as "you have no conversations". */
   if (loadError) {
     return (
-      <div className="bg-white rounded-2xl border border-[#e5e5e5] px-6 py-16 text-center">
+      <div role="alert" className="bg-white rounded-2xl border border-[#e5e5e5] px-6 py-16 text-center">
         <div className="w-12 h-12 rounded-full bg-red-50 text-red-500 flex items-center justify-center mx-auto">
-          <AlertCircle className="w-6 h-6" />
+          <AlertCircle aria-hidden="true" className="w-6 h-6" />
         </div>
         <p className="font-semibold mt-4">{loadError}</p>
         <p className="text-sm text-[#737373] mt-2">
           Vérifiez votre connexion, puis réessayez.
         </p>
-        <button onClick={fetchConversations} className="btn-primary mt-6">
-          <RefreshCw className="w-4 h-4" />
+        <button type="button" onClick={fetchConversations} className="btn-primary mt-6">
+          <RefreshCw aria-hidden="true" className="w-4 h-4" />
           Réessayer
         </button>
       </div>
@@ -154,7 +155,9 @@ export function MessagingUI({
             conversations.map((c) => (
               <button
                 key={c.id}
+                type="button"
                 onClick={() => setSelectedConv(c)}
+                aria-current={selectedConv?.id === c.id ? "true" : undefined}
                 className={`w-full text-left p-4 hover:bg-[#fafafa] transition-colors border-b border-[#f1f1f1] ${
                   selectedConv?.id === c.id ? "bg-[#fff8ee]" : ""
                 }`}
@@ -180,14 +183,14 @@ export function MessagingUI({
           <>
             <div className="p-4 bg-white border-b border-[#e5e5e5] flex items-center gap-3">
               <div className="w-8 h-8 rounded-full bg-[#f47b00]/10 flex items-center justify-center text-[#f47b00]">
-                {userRole === "COMPANY" ? <User className="w-4 h-4" /> : <Building2 className="w-4 h-4" />}
+                {userRole === "COMPANY" ? <User aria-hidden="true" className="w-4 h-4" /> : <Building2 aria-hidden="true" className="w-4 h-4" />}
               </div>
               <div className="font-bold">
                 {userRole === "COMPANY" ? `${selectedConv.talentName} ${selectedConv.talentLastName}` : selectedConv.companyName}
               </div>
             </div>
             
-            <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div ref={scrollRef} role="log" aria-live="polite" className="flex-1 overflow-y-auto p-4 space-y-4">
               {messages.map((m) => (
                 <div 
                   key={m.id} 
@@ -210,8 +213,8 @@ export function MessagingUI({
             </div>
 
             {sendError && (
-              <div className="px-4 pt-3 flex items-start gap-2 text-sm text-red-600">
-                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+              <div role="alert" className="px-4 pt-3 flex items-start gap-2 text-sm text-red-600">
+                <AlertCircle aria-hidden="true" className="w-4 h-4 shrink-0 mt-0.5" />
                 <span>{sendError}</span>
               </div>
             )}
@@ -220,7 +223,7 @@ export function MessagingUI({
                 type="text"
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
-                placeholder="Votre message..."
+                placeholder="Votre message…"
                 aria-label="Votre message"
                 aria-invalid={!!sendError}
                 className="input"
@@ -231,13 +234,13 @@ export function MessagingUI({
                 aria-label="Envoyer le message"
                 className="btn-primary p-3"
               >
-                {sending ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
+                {sending ? <Loader2 aria-hidden="true" className="w-5 h-5 animate-spin" /> : <Send aria-hidden="true" className="w-5 h-5" />}
               </button>
             </form>
           </>
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center text-[#737373]">
-            <MessageCircle className="w-12 h-12 mb-2 opacity-20" />
+            <MessageCircle aria-hidden="true" className="w-12 h-12 mb-2 opacity-20" />
             <p>Sélectionnez une conversation pour commencer.</p>
           </div>
         )}

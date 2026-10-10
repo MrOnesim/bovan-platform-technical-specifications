@@ -92,25 +92,29 @@ export function NewOpportunityForm({
   return (
     <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-6 md:p-8 border border-[#e5e5e5] space-y-6">
       <div>
-        <label className="label">Titre du poste *</label>
+        <label className="label" htmlFor="title">Titre du poste *</label>
         <input
+          id="title"
+          name="title"
           required
           type="text"
           value={form.title}
           onChange={(e) => update("title", e.target.value)}
           className="input"
-          placeholder="ex: Développeur Full Stack Senior"
+          placeholder="ex : Développeur Full Stack Senior"
         />
       </div>
 
       <div>
-        <label className="label">Description *</label>
+        <label className="label" htmlFor="description">Description *</label>
         <textarea
+          id="description"
+          name="description"
           required
           value={form.description}
           onChange={(e) => update("description", e.target.value)}
           className="input min-h-[160px] resize-y"
-          placeholder="Décrivez le poste, les missions, l'équipe, ce que vous offrez..."
+          placeholder="Décrivez le poste, les missions, l'équipe, ce que vous offrez…"
         />
         <p className="helper">
           Soignez cette description : c&apos;est ce qui donne envie de postuler.
@@ -119,8 +123,10 @@ export function NewOpportunityForm({
 
       <div className="grid md:grid-cols-2 gap-4">
         <div>
-          <label className="label">Type de contrat *</label>
+          <label className="label" htmlFor="employmentType">Type de contrat *</label>
           <select
+            id="employmentType"
+            name="employmentType"
             value={form.employmentType}
             onChange={(e) => update("employmentType", e.target.value)}
             className="select"
@@ -135,8 +141,10 @@ export function NewOpportunityForm({
           </select>
         </div>
         <div>
-          <label className="label">Niveau d&apos;expérience *</label>
+          <label className="label" htmlFor="experienceLevel">Niveau d&apos;expérience *</label>
           <select
+            id="experienceLevel"
+            name="experienceLevel"
             value={form.experienceLevel}
             onChange={(e) => update("experienceLevel", e.target.value)}
             className="select"
@@ -154,8 +162,10 @@ export function NewOpportunityForm({
 
       <div className="grid md:grid-cols-2 gap-4">
         <div>
-          <label className="label">Pays</label>
+          <label className="label" htmlFor="countryIso2">Pays</label>
           <select
+            id="countryIso2"
+            name="countryIso2"
             value={form.countryIso2}
             onChange={(e) => update("countryIso2", e.target.value)}
             className="select"
@@ -169,41 +179,50 @@ export function NewOpportunityForm({
           </select>
         </div>
         <div>
-          <label className="label">Ville / Lieu</label>
+          <label className="label" htmlFor="location">Ville / Lieu</label>
           <input
+            id="location"
+            name="location"
             type="text"
+            autoComplete="address-level2"
             value={form.location}
             onChange={(e) => update("location", e.target.value)}
             className="input"
-            placeholder="ex: Cotonou, Bénin"
+            placeholder="ex : Cotonou, Bénin"
           />
         </div>
       </div>
 
       <div className="grid md:grid-cols-3 gap-4">
         <div>
-          <label className="label">Salaire min</label>
+          <label className="label" htmlFor="salaryMin">Salaire min</label>
           <input
+            id="salaryMin"
+            name="salaryMin"
             type="number"
             value={form.salaryMin}
             onChange={(e) => update("salaryMin", e.target.value)}
             className="input"
-            placeholder="ex: 20000"
+            placeholder="ex : 20000"
           />
         </div>
         <div>
-          <label className="label">Salaire max</label>
+          <label className="label" htmlFor="salaryMax">Salaire max</label>
           <input
+            id="salaryMax"
+            name="salaryMax"
             type="number"
             value={form.salaryMax}
             onChange={(e) => update("salaryMax", e.target.value)}
             className="input"
-            placeholder="ex: 35000"
+            placeholder="ex : 35000"
           />
         </div>
         <div>
-          <label className="label">Devise</label>
+          <label className="label" htmlFor="currency">Devise</label>
           <select
+            id="currency"
+            name="currency"
             value={form.currency}
             onChange={(e) => update("currency", e.target.value)}
             className="select"
@@ -233,7 +252,7 @@ export function NewOpportunityForm({
       </label>
 
       <div>
-        <label className="label">Compétences recherchées</label>
+        <label className="label" htmlFor="skillInput">Compétences recherchées</label>
         {selectedSkills.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-3">
             {selectedSkills.map((s) => (
@@ -245,9 +264,10 @@ export function NewOpportunityForm({
                 <button
                   type="button"
                   onClick={() => toggleSkill(s)}
+                  aria-label={`Retirer la compétence ${s}`}
                   className="hover:bg-[#f47b00]/20 rounded-full p-0.5"
                 >
-                  <X className="w-3 h-3" />
+                  <X aria-hidden="true" className="w-3 h-3" />
                 </button>
               </span>
             ))}
@@ -255,6 +275,8 @@ export function NewOpportunityForm({
         )}
         <div className="flex gap-2">
           <input
+            id="skillInput"
+            name="skillInput"
             type="text"
             value={skillInput}
             onChange={(e) => setSkillInput(e.target.value)}
@@ -270,9 +292,10 @@ export function NewOpportunityForm({
           <button
             type="button"
             onClick={addCustomSkill}
+            aria-label="Ajouter la compétence saisie"
             className="btn-light shrink-0"
           >
-            <Plus className="w-4 h-4" />
+            <Plus aria-hidden="true" className="w-4 h-4" />
           </button>
         </div>
         {skills.length > 0 && (
@@ -284,6 +307,7 @@ export function NewOpportunityForm({
                   key={s.id}
                   type="button"
                   onClick={() => toggleSkill(s.name)}
+                  aria-pressed={selectedSkills.includes(s.name)}
                   className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
                     selectedSkills.includes(s.name)
                       ? "bg-[#f47b00] text-white border-[#f47b00]"
@@ -299,7 +323,7 @@ export function NewOpportunityForm({
       </div>
 
       {error && (
-        <div className="text-sm text-red-600 bg-red-50 px-4 py-3 rounded-xl">
+        <div role="alert" className="text-sm text-red-600 bg-red-50 px-4 py-3 rounded-xl">
           {error}
         </div>
       )}
@@ -314,9 +338,9 @@ export function NewOpportunityForm({
         </button>
         <button type="submit" disabled={loading} className="btn-primary">
           {loading ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
+            <Loader2 aria-hidden="true" className="w-4 h-4 animate-spin" />
           ) : (
-            <Check className="w-4 h-4" />
+            <Check aria-hidden="true" className="w-4 h-4" />
           )}
           Publier l&apos;opportunité
         </button>

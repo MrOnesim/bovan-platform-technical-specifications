@@ -105,7 +105,7 @@ export default async function OpportunitiesPage({
         <div className="container-bovan relative">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 chip-orange bg-white/10 text-[#ffb352] ring-white/20 mb-4">
-              <Briefcase className="w-3.5 h-3.5" />
+              <Briefcase aria-hidden="true" className="w-3.5 h-3.5" />
               {opps.length} opportunités actives
             </div>
             <h1 className="heading-1 text-white">
@@ -125,17 +125,19 @@ export default async function OpportunitiesPage({
         <form className="bg-white p-4 rounded-2xl border border-[#e5e5e5] shadow-sm mb-8">
           <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
             <div className="md:col-span-2 relative">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#a3a3a3]" />
+              <Search aria-hidden="true" className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#a3a3a3]" />
               <input
                 name="q"
-                type="text"
+                type="search"
+                aria-label="Rechercher un poste ou un mot-clé"
                 defaultValue={params.q}
-                placeholder="Poste, mot-clé..."
+                placeholder="Poste, mot-clé…"
                 className="input pl-10"
               />
             </div>
             <select
               name="country"
+              aria-label="Pays"
               defaultValue={params.country || ""}
               className="select"
             >
@@ -148,6 +150,7 @@ export default async function OpportunitiesPage({
             </select>
             <select
               name="type"
+              aria-label="Type de contrat"
               defaultValue={params.type || ""}
               className="select"
             >

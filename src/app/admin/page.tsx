@@ -1,9 +1,18 @@
 ﻿import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { db } from "@/db";
-import { users, talentProfiles, companies, opportunities, applications, countries } from "@/db/schema";
-import { sql, desc, eq } from "drizzle-orm";
-import { Users, Building2, Briefcase, Send, Globe2, TrendingUp } from "lucide-react";
+import {
+  users,
+  talentProfiles,
+  companies,
+  opportunities,
+  applications,
+  countries,
+  reviews,
+} from "@/db/schema";
+import { sql, desc, eq, and } from "drizzle-orm";
+import { Users, Building2, Briefcase, Send, Globe2, TrendingUp, Star, Check, X } from "lucide-react";
+import { ReviewModerationButtons } from "@/components/ReviewModerationButtons";
 
 export const dynamic = "force-dynamic";
 
@@ -40,6 +49,25 @@ export default async function AdminPage() {
     )`))
     .limit(10);
 
+  const pendingReviews = await db
+    .select({
+      id: reviews.id,
+      rating: reviews.rating,
+      comment: reviews.comment,
+      targetType: reviews.targetType,
+      targetId: reviews.targetId,
+      createdAt: reviews.createdAt,
+      authorFirstName: users.firstName,
+      authorLastName: users.lastName,
+      authorEmail: users.email,
+      authorRole: users.role,
+    })
+    .from(reviews)
+    .innerJoin(users, eq(users.id, reviews.authorId))
+    .where(eq(reviews.status, "PENDING"))
+    .orderBy(desc(reviews.createdAt))
+    .limit(20);
+
   return (
     <div className="bg-[#fafafa] min-h-screen">
       <div className="container-bovan py-8">
@@ -65,7 +93,7 @@ export default async function AdminPage() {
               key={s.label}
               className="bg-white rounded-2xl p-5 border border-[#e5e5e5]"
             >
-              <s.icon className={`w-5 h-5 ${s.color} mb-2`} />
+              <s.icon aria-hidden="true" className={`w-5 h-5 ${s.color} mb-2`} />
               <div className="stat-sm">
                 {(s.value || 0).toLocaleString("fr-FR")}
               </div>
@@ -76,31 +104,95 @@ export default async function AdminPage() {
 
         <div className="mt-8 bg-white rounded-2xl p-6 border border-[#e5e5e5]">
           <h2 className="font-bold text-lg mb-4 flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-[#f47b00]" />
+            <TrendingUp aria-hidden="true" className="w-5 h-5 text-[#f47b00]" />
             Top pays
           </h2>
-          <div className="space-y-2">
-            {topCountries.map((c, i) => (
-              <div
-                key={c.iso2}
-                className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#fafafa]"
-              >
-                <span className="text-sm text-[#737373] font-mono w-6">
-                  #{i + 1}
-                </span>
-                <span className="text-2xl">{c.flag}</span>
-                <span className="font-medium flex-1">{c.nameFr}</span>
-                <div className="flex items-center gap-4 text-sm">
-                  <span className="text-[#737373]">
-                    {c.talentsCount} talents
-                  </span>
-                  <span className="text-[#737373]">
-                    {c.companiesCount} entreprises
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
+          <table className="w-full text-sm">
+            <caption className="sr-only">Classement des pays par activité</caption>
+            <thead>
+              <tr className="text-left text-xs uppercase tracking-wide text-[#737373]">
+                <th scope="col" className="py-2 pr-3 font-medium w-10">Rang</th>
+                <th scope="col" className="py-2 pr-3 font-medium">Pays</th>
+                <th scope="col" className="py-2 pr-3 font-medium text-right">Talents</th>
+                <th scope="col" className="py-2 font-medium text-right">Entreprises</th>
+              </tr>
+            </thead>
+            <tbody>
+              {topCountries.map((c, i) => (
+                <tr key={c.iso2} className="border-t border-[#f1f1f1] hover:bg-[#fafafa]">
+                  <td className="py-3 pr-3 text-[#737373] font-mono">#{i + 1}</td>
+                  <td className="py-3 pr-3 font-medium">
+                    <span aria-hidden="true" className="mr-2 text-lg align-middle">{c.flag}</span>
+                    {c.nameFr}
+                  </td>
+                  <td className="py-3 pr-3 text-right text-[#737373]">{c.talentsCount}</td>
+                  <td className="py-3 text-right text-[#737373]">{c.companiesCount}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="mt-8 bg-white rounded-2xl p-6 border border-[#e5e5e5]">
+          <h2 className="font-bold text-lg mb-4 flex items-center gap-2">
+            <Star aria-hidden="true" className="w-5 h-5 text-[#f47b00]" />
+            Modération des avis
+            <span className="text-sm font-normal text-[#737373]">
+              ({pendingReviews.length} en attente)
+            </span>
+          </h2>
+          {pendingReviews.length === 0 ? (
+            <p className="text-sm text-[#737373]">
+              Aucun avis en attente de validation.
+            </p>
+          ) : (
+            <ul className="space-y-4">
+              {pendingReviews.map((r) => (
+                <li
+                  key={r.id}
+                  className="border border-[#f1f1f1] rounded-xl p-4 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3"
+                >
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-medium text-sm">
+                        {r.authorFirstName || ""} {r.authorLastName || ""}
+                      </span>
+                      <span className="chip text-xs">
+                        {r.authorRole === "COMPANY" ? "Entreprise" : "Talent"}
+                      </span>
+                      <span className="chip text-xs">
+                        Avis sur {r.targetType === "TALENT" ? "un talent" : "une entreprise"}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1 mt-2">
+                      {[1, 2, 3, 4, 5].map((i) => (
+                        <Star
+                          key={i}
+                          aria-hidden="true"
+                          className={`w-4 h-4 ${
+                            i <= r.rating
+                              ? "text-[#f47b00] fill-[#f47b00]"
+                              : "text-[#d4d4d4]"
+                          }`}
+                        />
+                      ))}
+                      <span className="sr-only">Note : {r.rating} sur 5</span>
+                    </div>
+                    {r.comment && (
+                      <p className="text-sm text-[#525252] mt-2 whitespace-pre-line">
+                        {r.comment}
+                      </p>
+                    )}
+                    <p className="text-xs text-[#737373] mt-2">
+                      {new Date(r.createdAt).toLocaleDateString("fr-FR")} ·{" "}
+                      {r.authorEmail}
+                    </p>
+                  </div>
+                  <ReviewModerationButtons reviewId={r.id} />
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
     </div>

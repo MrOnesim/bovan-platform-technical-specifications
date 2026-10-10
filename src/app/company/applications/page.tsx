@@ -103,7 +103,7 @@ export default async function CompanyApplicationsPage() {
                       className="bg-white rounded-2xl p-5 border border-[#e5e5e5] hover:border-[#f47b00] transition-colors"
                     >
                       <div className="flex items-start gap-4 flex-wrap">
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#f47b00] to-[#c56200] flex items-center justify-center text-white font-bold shrink-0">
+                        <div className="w-12 h-12 rounded-full bg-linear-to-br from-[#f47b00] to-[#c56200] flex items-center justify-center text-white font-bold shrink-0">
                           {a.firstName?.[0]}
                           {a.lastName?.[0]}
                         </div>

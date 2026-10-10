@@ -132,13 +132,13 @@ export default async function CountryDetailPage({
             ← Tous les pays
           </Link>
           <div className="flex flex-col md:flex-row items-start gap-6">
-            <div className="text-7xl">{country.flag}</div>
+            <div aria-hidden="true" className="text-7xl">{country.flag}</div>
             <div className="flex-1">
               <h1 className="heading-2">
                 {country.nameFr}
               </h1>
               <div className="flex items-center gap-2 mt-2 text-white/60">
-                <MapPin className="w-4 h-4" />
+                <MapPin aria-hidden="true" className="w-4 h-4" />
                 Capitale : {country.capital}
                 {country.region && <span> · {country.region}</span>}
               </div>

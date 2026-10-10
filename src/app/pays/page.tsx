@@ -65,27 +65,27 @@ export default async function CountriesPage() {
                 <Link
                   key={c.iso2}
                   href={`/pays/${c.iso2.toLowerCase()}`}
-                  className="bg-white rounded-2xl p-4 border border-[#e5e5e5] hover:border-[#f47b00] transition-all group"
+                  className="bg-white rounded-2xl p-4 border border-[#e5e5e5] hover:border-[#f47b00] transition-colors group"
                 >
-                  <div className="text-3xl mb-2">{c.flag}</div>
+                  <div aria-hidden="true" className="text-3xl mb-2">{c.flag}</div>
                   <h3 className="font-semibold group-hover:text-[#f47b00] transition-colors">
                     {c.nameFr}
                   </h3>
                   <div className="text-xs text-[#737373] mt-1 flex items-center gap-1">
-                    <MapPin className="w-3 h-3" />
+                    <MapPin aria-hidden="true" className="w-3 h-3" />
                     {c.capital}
                   </div>
                   <div className="flex items-center gap-3 mt-3 text-xs">
                     <span className="flex items-center gap-1 text-[#525252]">
-                      <Users className="w-3 h-3" />
+                      <Users aria-hidden="true" className="w-3 h-3" />
                       {c.talentsCount}
                     </span>
                     <span className="flex items-center gap-1 text-[#525252]">
-                      <Building2 className="w-3 h-3" />
+                      <Building2 aria-hidden="true" className="w-3 h-3" />
                       {c.companiesCount}
                     </span>
                     <span className="flex items-center gap-1 text-[#f47b00] font-semibold">
-                      <Briefcase className="w-3 h-3" />
+                      <Briefcase aria-hidden="true" className="w-3 h-3" />
                       {c.opportunitiesCount}
                     </span>
                   </div>
@@ -107,13 +107,13 @@ export default async function CountriesPage() {
               <Link
                 key={c.iso2}
                 href={`/pays/${c.iso2.toLowerCase()}`}
-                className="bg-white rounded-xl p-3 border border-[#e5e5e5] hover:border-[#f47b00] hover:bg-[#fff8ee] transition-all group flex items-center gap-2"
+                className="bg-white rounded-xl p-3 border border-[#e5e5e5] hover:border-[#f47b00] hover:bg-[#fff8ee] transition-colors group flex items-center gap-2"
               >
-                <span className="text-xl">{c.flag}</span>
+                <span aria-hidden="true" className="text-xl">{c.flag}</span>
                 <span className="font-medium text-sm group-hover:text-[#f47b00] transition-colors truncate flex-1">
                   {c.nameFr}
                 </span>
-                <ArrowRight className="w-3 h-3 text-[#a3a3a3] group-hover:text-[#f47b00] transition-colors" />
+                <ArrowRight aria-hidden="true" className="w-3 h-3 text-[#a3a3a3] group-hover:text-[#f47b00] transition-colors" />
               </Link>
             ))}
           </div>

@@ -59,7 +59,7 @@ export function AfricaMap({ stats }: { stats: CountryStat[] }) {
           setHovered(null);
           setActive(null);
         }}
-        role="img"
+        role="group"
         aria-label="Carte de l'Afrique, interactif"
       >
         <g>
@@ -91,9 +91,19 @@ export function AfricaMap({ stats }: { stats: CountryStat[] }) {
                   setActive(c.iso2);
                   setHovered(s ?? null);
                 }}
-                onFocus={() => {
+                onFocus={(e) => {
                   setActive(c.iso2);
                   setHovered(s ?? null);
+                  const svg = e.currentTarget.ownerSVGElement;
+                  if (svg) {
+                    const r = svg.getBoundingClientRect();
+                    const pr = e.currentTarget.getBoundingClientRect();
+                    setBox({ width: r.width, height: r.height });
+                    setPointer({
+                      x: pr.left - r.left + pr.width / 2,
+                      y: pr.top - r.top + pr.height / 2,
+                    });
+                  }
                 }}
                 onBlur={() => {
                   setActive(null);
@@ -129,7 +139,7 @@ export function AfricaMap({ stats }: { stats: CountryStat[] }) {
         >
           <div className="bg-[#0a0a0a] text-white rounded-xl px-4 py-3 shadow-2xl min-w-[200px]">
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-xl">{hovered.flag}</span>
+              <span aria-hidden="true" className="text-xl">{hovered.flag}</span>
               <span className="font-semibold">{hovered.nameFr}</span>
             </div>
             <div className="space-y-1 text-sm">

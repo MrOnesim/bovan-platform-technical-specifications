@@ -60,8 +60,14 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         className="bg-[#fafafa] text-[#0a0a0a] antialiased min-h-screen flex flex-col"
         style={{ fontFamily: "var(--font-inter), Inter, system-ui, sans-serif" }}
       >
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-[100] focus:rounded-full focus:bg-[#0a0a0a] focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-white"
+        >
+          Aller au contenu principal
+        </a>
         <Navbar session={session} />
-        <main className="flex-1">{children}</main>
+        <main id="main-content" className="flex-1">{children}</main>
         <Footer />
       </body>
     </html>

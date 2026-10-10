@@ -126,6 +126,12 @@ export const skillCategoryEnum = pgEnum("skill_category", [
   "CREATIVE",
   "OTHER",
 ]);
+export const reviewTargetEnum = pgEnum("review_target", ["TALENT", "COMPANY"]);
+export const reviewStatusEnum = pgEnum("review_status", [
+  "PENDING",
+  "APPROVED",
+  "REJECTED",
+]);
 
 // ============================================================
 // Reference data
@@ -544,6 +550,37 @@ export const reports = pgTable("reports", {
 });
 
 // ============================================================
+// Reviews (avis liés à une interaction réelle, validés par un admin)
+// ============================================================
+
+export const reviews = pgTable(
+  "reviews",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    authorId: uuid("author_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    targetType: reviewTargetEnum("target_type").notNull(),
+    // talentProfiles.id when targetType = TALENT, companies.id when COMPANY
+    targetId: uuid("target_id").notNull(),
+    rating: integer("rating").notNull(),
+    comment: text("comment"),
+    status: reviewStatusEnum("status").default("PENDING").notNull(),
+    moderatedAt: timestamp("moderated_at"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (t) => ({
+    targetIdx: index("reviews_target_idx").on(t.targetType, t.targetId),
+    authorIdx: index("reviews_author_idx").on(t.authorId),
+    uniqIdx: uniqueIndex("reviews_author_target_idx").on(
+      t.authorId,
+      t.targetType,
+      t.targetId
+    ),
+  })
+);
+
+// ============================================================
 // Relations
 // ============================================================
 
@@ -614,4 +651,8 @@ export const applicationsRelations = relations(applications, ({ one }) => ({
     fields: [applications.talentId],
     references: [talentProfiles.id],
   }),
+}));
+
+export const reviewsRelations = relations(reviews, ({ one }) => ({
+  author: one(users, { fields: [reviews.authorId], references: [users.id] }),
 }));

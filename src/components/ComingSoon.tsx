@@ -38,7 +38,7 @@ export function ComingSoon({
 
             <div className="bg-white rounded-2xl p-12 border border-[#e5e5e5] text-center">
               <div className="w-16 h-16 rounded-full bg-[#f47b00]/10 text-[#f47b00] flex items-center justify-center mx-auto">
-                <Clock className="w-7 h-7" />
+                <Clock aria-hidden="true" className="w-7 h-7" />
               </div>
               <h2 className="font-bold text-xl mt-4">Bientôt disponible</h2>
               <p className="text-[#737373] mt-2 max-w-md mx-auto">
@@ -47,7 +47,7 @@ export function ComingSoon({
               </p>
               <Link href={backHref} className="btn-primary mt-6">
                 Retour au tableau de bord
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight aria-hidden="true" className="w-4 h-4" />
               </Link>
             </div>
           </div>

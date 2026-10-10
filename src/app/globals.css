@@ -269,13 +269,15 @@
     background-color: #fff;
     border-radius: 1rem;
     border: 1px solid #e5e5e5;
-    transition: all 0.2s;
+    transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s,
+      transform 0.2s;
   }
   .card-hover {
     background-color: #fff;
     border-radius: 1rem;
     border: 1px solid #e5e5e5;
-    transition: all 0.2s;
+    transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s,
+      transform 0.2s;
   }
   .card-hover:hover {
     border-color: #0a0a0a;
@@ -290,7 +292,7 @@
     border-radius: 0.75rem;
     padding: 0.75rem 1rem;
     color: #0a0a0a;
-    transition: all 0.15s;
+    transition: background-color 0.15s, border-color 0.15s, box-shadow 0.15s;
     outline: none;
   }
   .input::placeholder { color: #a3a3a3; }
@@ -305,7 +307,7 @@
     border-radius: 0.75rem;
     padding: 0.75rem 1rem;
     color: #0a0a0a;
-    transition: all 0.15s;
+    transition: background-color 0.15s, border-color 0.15s, box-shadow 0.15s;
     outline: none;
     appearance: none;
     cursor: pointer;
@@ -572,6 +574,86 @@
 }
 .marquee {
   animation: marquee 32s linear infinite;
+}
+/* Moving content must be pausable; hovering or focusing the strip halts it. */
+.marquee:hover,
+.marquee:focus-within {
+  animation-play-state: paused;
+}
+
+/* ============================================================
+   SECTION A — HERO "forge / braises"
+   Hand-rolled: panning grid + drifting glows + rising embers.
+   ============================================================ */
+@keyframes grid-pan {
+  from { background-position: 0 0; }
+  to   { background-position: 0 32px; }
+}
+.hero-grid-pan {
+  animation: grid-pan 10s linear infinite;
+}
+
+@keyframes glow-float {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50%      { transform: translate3d(24px, -28px, 0) scale(1.1); }
+}
+.glow-float { animation: glow-float 14s ease-in-out infinite; }
+.glow-float-slow { animation: glow-float 22s ease-in-out infinite; }
+
+.ember-field {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.ember {
+  position: absolute;
+  bottom: -12px;
+  width: 4px;
+  height: 4px;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle,
+    #ffca7a 0%,
+    rgba(244, 123, 0, 0.9) 45%,
+    rgba(244, 123, 0, 0) 72%
+  );
+  opacity: 0;
+  animation-name: ember-rise;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+@keyframes ember-rise {
+  0%   { transform: translateY(0) scale(0.6); opacity: 0; }
+  12%  { opacity: 0.9; }
+  70%  { opacity: 0.45; }
+  100% { transform: translateY(-78vh) scale(1.15); opacity: 0; }
+}
+
+/* ============================================================
+   SECTION B — AFRICA MAP "Aurora UI"
+   Driven by the ui-ux-pro-max skill:
+   flowing mesh gradient · 8-12s loop · complementary blue-orange ·
+   mix-blend-mode: screen · saturate(1.2) · one animated element.
+   ============================================================ */
+@keyframes aurora-drift {
+  0%   { transform: translate3d(-3%, -2%, 0) scale(1.05) rotate(0deg); }
+  100% { transform: translate3d(3%, 3%, 0) scale(1.18) rotate(8deg); }
+}
+.aurora-mesh {
+  background:
+    conic-gradient(
+      from 210deg at 32% 28%,
+      transparent 0deg,
+      rgba(244, 123, 0, 0.5) 70deg,
+      transparent 150deg
+    ),
+    radial-gradient(60% 60% at 72% 30%, rgba(37, 99, 235, 0.45), transparent 66%),
+    radial-gradient(55% 60% at 24% 76%, rgba(244, 123, 0, 0.5), transparent 66%);
+  filter: blur(48px) saturate(1.2);
+  mix-blend-mode: screen;
+  animation: aurora-drift 9s ease-in-out infinite alternate;
+  will-change: transform;
 }
 
 /* ============================================================

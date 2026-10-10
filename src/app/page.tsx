@@ -32,6 +32,23 @@ import { TalentCard } from "@/components/TalentCard";
 import { CompanyCard } from "@/components/CompanyCard";
 import { OpportunityCard } from "@/components/OpportunityCard";
 
+/* Hand-rolled hero embers (Section A). Positions are hard-coded so the
+   server and client render the same markup — no random, no hydration drift. */
+const EMBERS = [
+  { left: "6%", delay: "0s", duration: "9s", scale: 1 },
+  { left: "14%", delay: "3.2s", duration: "12s", scale: 0.7 },
+  { left: "23%", delay: "1.4s", duration: "10s", scale: 1.2 },
+  { left: "31%", delay: "5.6s", duration: "13s", scale: 0.8 },
+  { left: "40%", delay: "2.1s", duration: "9.5s", scale: 1 },
+  { left: "48%", delay: "6.8s", duration: "11s", scale: 0.6 },
+  { left: "57%", delay: "0.8s", duration: "12.5s", scale: 1.1 },
+  { left: "65%", delay: "4.3s", duration: "10.5s", scale: 0.9 },
+  { left: "73%", delay: "7.5s", duration: "14s", scale: 0.7 },
+  { left: "81%", delay: "2.9s", duration: "11.5s", scale: 1.2 },
+  { left: "89%", delay: "5.1s", duration: "9.8s", scale: 0.8 },
+  { left: "95%", delay: "1.7s", duration: "13s", scale: 1 },
+];
+
 /* The page stays dynamic (the layout reads the session cookie) but the
    homepage aggregates are public and change slowly, so they are cached for a
    short window instead of running 5 queries on every request. */
@@ -187,10 +204,24 @@ export default async function HomePage() {
     <div>
       {/* HERO */}
       <section className="relative overflow-hidden bg-[#0a0a0a] text-white">
-        <div className="absolute inset-0 bg-grid-dark opacity-30" />
-        <div className="absolute top-1/4 -left-32 w-96 h-96 glow-orange opacity-30" />
-        <div className="absolute bottom-0 -right-32 w-96 h-96 glow-orange opacity-20" />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0a0a0a]" />
+        <div className="absolute inset-0 bg-grid-dark hero-grid-pan opacity-30" />
+        <div className="absolute top-1/4 -left-32 w-96 h-96 glow-orange glow-float opacity-30" />
+        <div className="absolute bottom-0 -right-32 w-96 h-96 glow-orange glow-float-slow opacity-20" />
+        <div className="ember-field" aria-hidden="true">
+          {EMBERS.map((e, i) => (
+            <span
+              key={i}
+              className="ember"
+              style={{
+                left: e.left,
+                animationDelay: e.delay,
+                animationDuration: e.duration,
+                transform: `scale(${e.scale})`,
+              }}
+            />
+          ))}
+        </div>
+        <div className="absolute inset-0 bg-linear-to-b from-transparent via-transparent to-[#0a0a0a]" />
 
         <div className="container-bovan relative py-20 md:py-32 lg:py-40">
           <div className="text-center max-w-5xl mx-auto">
@@ -220,7 +251,7 @@ export default async function HomePage() {
           </div>
         </div>
 
-        <div className="h-12 bg-gradient-to-b from-[#0a0a0a] to-[#fafafa]" />
+        <div className="h-12 bg-linear-to-b from-[#0a0a0a] to-[#fafafa]" />
       </section>
 
       {/* SCROLL STORYTELLING */}
@@ -268,10 +299,10 @@ export default async function HomePage() {
             ].map((s, i) => (
               <div
                 key={i}
-                className="group relative p-8 rounded-2xl bg-white border border-[#e5e5e5] hover:border-[#0a0a0a] transition-all hover:shadow-[0_24px_60px_-20px_rgba(0,0,0,0.15)] hover:-translate-y-1"
+                className="group relative p-8 rounded-2xl bg-white border border-[#e5e5e5] hover:border-[#0a0a0a] transition hover:shadow-[0_24px_60px_-20px_rgba(0,0,0,0.15)] hover:-translate-y-1"
               >
                 <div
-                  className={`inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br ${s.color} text-white mb-6`}
+                  className={`inline-flex items-center justify-center w-12 h-12 rounded-xl bg-linear-to-br ${s.color} text-white mb-6`}
                 >
                   {s.icon}
                 </div>
@@ -334,8 +365,10 @@ export default async function HomePage() {
             </div>
 
             <div className="bg-[#0a0a0a] rounded-3xl p-6 md:p-10 relative overflow-hidden">
-              <div className="absolute inset-0 bg-grid-dark opacity-20" />
-              <div className="absolute top-0 right-0 w-72 h-72 glow-orange opacity-20" />
+              {/* Aurora UI mesh — ui-ux-pro-max skill (flowing gradient,
+                  9s loop, complementary blue-orange, blend screen). */}
+              <div className="absolute inset-0 aurora-mesh" aria-hidden="true" />
+              <div className="absolute inset-0 bg-grid-dark opacity-10" aria-hidden="true" />
               <div className="relative">
                 <AfricaMap stats={countryStats} />
               </div>
@@ -613,7 +646,7 @@ export default async function HomePage() {
                 <span className="text-[#f47b00]">visible</span>. »
               </blockquote>
               <div className="mt-8 flex items-center justify-center gap-4">
-                <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#f47b00] to-[#c56200] flex items-center justify-center text-white font-black text-lg">
+                <div className="w-14 h-14 rounded-full bg-linear-to-br from-[#f47b00] to-[#c56200] flex items-center justify-center text-white font-black text-lg">
                   {talents[0].firstName?.[0]}
                   {talents[0].lastName?.[0]}
                 </div>

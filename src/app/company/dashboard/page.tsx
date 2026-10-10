@@ -160,13 +160,14 @@ export default async function CompanyDashboardPage() {
                   <Link
                     key={item.label}
                     href={item.href}
+                    aria-current={item.active ? "page" : undefined}
                     className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium ${
                       item.active
                         ? "bg-[#f47b00]/10 text-[#c56200]"
                         : "text-[#525252] hover:bg-[#f1f1f1]"
                     }`}
                   >
-                    <item.icon className="w-4 h-4" />
+                    <item.icon aria-hidden="true" className="w-4 h-4" />
                     {item.label}
                   </Link>
                 ))}
@@ -189,7 +190,7 @@ export default async function CompanyDashboardPage() {
             </div>
 
             {/* CTA New opportunity */}
-            <div className="bg-gradient-to-br from-[#f47b00] to-[#c56200] text-white rounded-2xl p-6 relative overflow-hidden">
+            <div className="bg-linear-to-br from-[#f47b00] to-[#c56200] text-white rounded-2xl p-6 relative overflow-hidden">
               <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full" />
               <div className="relative flex items-center justify-between flex-wrap gap-4">
                 <div>
@@ -306,7 +307,7 @@ export default async function CompanyDashboardPage() {
                     const SIcon = status.icon;
                     return (
                       <div key={a.id} className="py-4 flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#f47b00] to-[#c56200] flex items-center justify-center text-white text-xs font-bold shrink-0">
+                        <div className="w-9 h-9 rounded-full bg-linear-to-br from-[#f47b00] to-[#c56200] flex items-center justify-center text-white text-xs font-bold shrink-0">
                           {a.talentName
                             .split(" ")
                             .map((p) => p[0])
@@ -354,10 +355,10 @@ export default async function CompanyDashboardPage() {
                   <Link
                     key={t.id}
                     href={`/talents/${t.slug}`}
-                    className="bg-white rounded-2xl p-4 border border-[#e5e5e5] hover:border-[#f47b00] transition-all"
+                    className="bg-white rounded-2xl p-4 border border-[#e5e5e5] hover:border-[#f47b00] transition-colors"
                   >
                     <div className="flex items-center gap-2 mb-2">
-                      <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#f47b00] to-[#c56200] flex items-center justify-center text-white text-xs font-bold">
+                      <div className="w-9 h-9 rounded-full bg-linear-to-br from-[#f47b00] to-[#c56200] flex items-center justify-center text-white text-xs font-bold">
                         {t.firstName?.[0]}
                         {t.lastName?.[0]}
                       </div>

@@ -58,10 +58,13 @@ export default function LoginPage() {
             <div>
               <label className="label" htmlFor="email">Email</label>
               <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#a3a3a3]" />
+                <Mail aria-hidden="true" className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#a3a3a3]" />
                 <input
                   id="email"
+                  name="email"
                   type="email"
+                  autoComplete="email"
+                  spellCheck={false}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="input pl-10"
@@ -73,10 +76,12 @@ export default function LoginPage() {
             <div>
               <label className="label" htmlFor="password">Mot de passe</label>
               <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#a3a3a3]" />
+                <Lock aria-hidden="true" className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#a3a3a3]" />
                 <input
                   id="password"
+                  name="password"
                   type={showPw ? "text" : "password"}
+                  autoComplete="current-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="input pl-10 pr-10"
@@ -86,6 +91,8 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPw(!showPw)}
+                  aria-label={showPw ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                  aria-pressed={showPw}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-[#a3a3a3] hover:text-[#0a0a0a]"
                 >
                   {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -94,13 +101,13 @@ export default function LoginPage() {
             </div>
 
             {error && (
-              <div className="text-sm text-red-600 bg-red-50 px-4 py-3 rounded-xl">
+              <div role="alert" className="text-sm text-red-600 bg-red-50 px-4 py-3 rounded-xl">
                 {error}
               </div>
             )}
 
             <button type="submit" disabled={loading} className="btn-primary w-full">
-              {loading ? "Connexion..." : "Se connecter"}
+              {loading ? "Connexion…" : "Se connecter"}
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>

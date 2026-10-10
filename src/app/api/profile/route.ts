@@ -8,6 +8,7 @@ import { z } from "zod";
 const schema = z.object({
   firstName: z.string().optional(),
   lastName: z.string().optional(),
+  avatarUrl: z.string().nullable().optional(),
   headline: z.string().optional(),
   profession: z.string().optional(),
   biography: z.string().optional(),
@@ -53,13 +54,13 @@ export async function POST(req: NextRequest) {
   try {
     const body = schema.parse(await req.json());
 
-    // Update user fields
-    if (body.firstName !== undefined || body.lastName !== undefined) {
+    if (body.firstName !== undefined || body.lastName !== undefined || body.avatarUrl !== undefined) {
       await db
         .update(users)
         .set({
           firstName: body.firstName ?? session.user.firstName,
           lastName: body.lastName ?? session.user.lastName,
+          avatarUrl: body.avatarUrl === undefined ? session.user.avatarUrl : body.avatarUrl,
           updatedAt: new Date(),
         })
         .where(eq(users.id, session.user.id));

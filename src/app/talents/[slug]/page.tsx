@@ -33,6 +33,13 @@ import { CompanyLogo } from "@/components/CompanyCard";
 import { initials, availabilityLabel, experienceLevelLabel } from "@/lib/utils";
 import Link from "next/link";
 import { ContactTalentButton } from "@/components/ContactTalentButton";
+import { ReviewSection } from "@/components/ReviewSection";
+import {
+  canReviewAsCompany,
+  canReviewAsTalent,
+  getApprovedReviews,
+} from "@/lib/reviews";
+import { getCurrentUser } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -130,6 +137,14 @@ export default async function TalentDetailPage({
   const talent = await getTalent(slug);
   if (!talent) notFound();
 
+  const session = await getCurrentUser();
+  const approvedReviews = await getApprovedReviews("TALENT", talent.id);
+  const canReview = Boolean(
+    session?.user.role === "COMPANY" &&
+      session.company &&
+      (await canReviewAsCompany(session.company.id, talent.id))
+  );
+
   const availabilityColors: Record<string, string> = {
     AVAILABLE: "bg-emerald-100 text-emerald-700 ring-emerald-200",
     OPEN_TO_OPPORTUNITIES: "bg-[#f47b00]/10 text-[#c56200] ring-[#f47b00]/20",
@@ -151,7 +166,7 @@ export default async function TalentDetailPage({
             ← Retour aux talents
           </Link>
           <div className="flex flex-col md:flex-row gap-6 md:items-end">
-            <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-2xl bg-gradient-to-br from-[#f47b00] to-[#c56200] flex items-center justify-center text-white font-black text-3xl md:text-4xl shrink-0 overflow-hidden">
+            <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-2xl bg-linear-to-br from-[#f47b00] to-[#c56200] flex items-center justify-center text-white font-black text-3xl md:text-4xl shrink-0 overflow-hidden">
               {talent.avatarUrl ? (
                 <Image
                   src={talent.avatarUrl}
@@ -236,9 +251,9 @@ export default async function TalentDetailPage({
                     key={s.slug}
                     className="px-3 py-1.5 rounded-full bg-[#f47b00]/5 border border-[#f47b00]/20 text-sm font-medium text-[#c56200] flex items-center gap-1.5"
                   >
-                    <CheckCircle2 className="w-3 h-3" />
+                    <CheckCircle2 aria-hidden="true" className="w-3 h-3" />
                     {s.name}
-                    <span className="ml-1 flex">
+                    <span className="ml-1 flex" role="img" aria-label={`Niveau ${s.level} sur 5`}>
                       {Array.from({ length: s.level }).map((_, i) => (
                         <span
                           key={i}
@@ -255,7 +270,7 @@ export default async function TalentDetailPage({
           {talent.experiences.length > 0 && (
             <div className="bg-white rounded-2xl p-6 md:p-8 border border-[#e5e5e5]">
               <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-                <Briefcase className="w-5 h-5" />
+                <Briefcase aria-hidden="true" className="w-5 h-5" />
                 Expériences
               </h2>
               <div className="space-y-6 relative">
@@ -318,7 +333,7 @@ export default async function TalentDetailPage({
           {talent.portfolio.length > 0 && (
             <div className="bg-white rounded-2xl p-6 md:p-8 border border-[#e5e5e5]">
               <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-                <Award className="w-5 h-5" />
+                <Award aria-hidden="true" className="w-5 h-5" />
                 Portfolio
               </h2>
               <div className="grid sm:grid-cols-2 gap-4">
@@ -327,8 +342,8 @@ export default async function TalentDetailPage({
                     key={p.id}
                     className="border border-[#e5e5e5] rounded-xl p-4 hover:border-[#f47b00] transition-colors"
                   >
-                    <div className="aspect-video bg-gradient-to-br from-[#f47b00]/10 to-[#0a0a0a]/5 rounded-lg mb-3 flex items-center justify-center">
-                      <Award className="w-8 h-8 text-[#f47b00]/40" />
+                    <div className="aspect-video bg-linear-to-br from-[#f47b00]/10 to-[#0a0a0a]/5 rounded-lg mb-3 flex items-center justify-center">
+                      <Award aria-hidden="true" className="w-8 h-8 text-[#f47b00]/40" />
                     </div>
                     <h3 className="font-semibold">{p.title}</h3>
                     {p.category && (
@@ -356,6 +371,13 @@ export default async function TalentDetailPage({
               </div>
             </div>
           )}
+
+          <ReviewSection
+            targetType="TALENT"
+            targetId={talent.id}
+            canReview={canReview}
+            reviews={approvedReviews}
+          />
         </div>
 
         {/* Sidebar */}
@@ -372,7 +394,7 @@ export default async function TalentDetailPage({
               <div>
                 <div className="h-2 bg-[#f1f1f1] rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-[#f47b00] rounded-full transition-all"
+                    className="h-full bg-[#f47b00] rounded-full transition-[width]"
                     style={{ width: `${talent.completionScore}%` }}
                   />
                 </div>
@@ -452,7 +474,7 @@ export default async function TalentDetailPage({
             </div>
           )}
 
-          <div className="bg-gradient-to-br from-[#f47b00] to-[#c56200] text-white rounded-2xl p-6">
+          <div className="bg-linear-to-br from-[#f47b00] to-[#c56200] text-white rounded-2xl p-6">
             <Briefcase className="w-6 h-6 mb-3" />
             <h3 className="font-bold text-lg">Une opportunité à proposer ?</h3>
             <p className="text-sm text-white/80 mt-2">

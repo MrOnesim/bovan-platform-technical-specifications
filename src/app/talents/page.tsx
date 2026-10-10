@@ -143,7 +143,7 @@ export default async function TalentsPage({
         <div className="container-bovan relative">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 chip-orange bg-white/10 text-[#ffb352] ring-white/20 mb-4">
-              <Users className="w-3.5 h-3.5" />
+              <Users aria-hidden="true" className="w-3.5 h-3.5" />
               {talents.length} talents visibles
             </div>
             <h1 className="heading-1 text-white">
@@ -164,17 +164,19 @@ export default async function TalentsPage({
         <form className="bg-white p-4 rounded-2xl border border-[#e5e5e5] shadow-sm mb-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
             <div className="md:col-span-2 relative">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#a3a3a3]" />
+              <Search aria-hidden="true" className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#a3a3a3]" />
               <input
                 name="q"
-                type="text"
+                type="search"
+                aria-label="Rechercher un métier, une compétence ou un nom"
                 defaultValue={params.q}
-                placeholder="Rechercher un métier, une compétence, un nom..."
+                placeholder="Rechercher un métier, une compétence, un nom…"
                 className="input pl-10"
               />
             </div>
             <select
               name="country"
+              aria-label="Pays"
               defaultValue={params.country || ""}
               className="select"
             >
@@ -187,6 +189,7 @@ export default async function TalentsPage({
             </select>
             <select
               name="availability"
+              aria-label="Disponibilité"
               defaultValue={params.availability || ""}
               className="select"
             >
@@ -215,7 +218,7 @@ export default async function TalentsPage({
               ))}
             </div>
             <button type="submit" className="btn-primary text-sm py-2">
-              <Filter className="w-4 h-4" />
+              <Filter aria-hidden="true" className="w-4 h-4" />
               Filtrer
             </button>
           </div>
@@ -237,8 +240,8 @@ export default async function TalentsPage({
       </section>
 
       <section className="container-bovan pb-20">
-        <div className="bg-gradient-to-r from-[#f47b00] to-[#c56200] rounded-3xl p-8 md:p-12 text-white text-center">
-          <User className="w-8 h-8 mx-auto mb-4" />
+        <div className="bg-linear-to-r from-[#f47b00] to-[#c56200] rounded-3xl p-8 md:p-12 text-white text-center">
+          <User aria-hidden="true" className="w-8 h-8 mx-auto mb-4" />
           <h3 className="heading-3 text-white">Vous êtes un talent ?</h3>
           <p className="mt-3 text-white/90 max-w-xl mx-auto">
             Rendez votre profil visible. Sans attendre qu&apos;une entreprise vous
