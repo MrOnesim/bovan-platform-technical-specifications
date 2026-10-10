@@ -46,7 +46,7 @@ export function HeroSlogan() {
           className="slogan-line slogan-line-4 mt-8 text-white/70 text-base sm:text-lg max-w-xl mx-auto"
           style={{ animationDelay: "0.1s" }}
         >
-          Explore. Connecte. Crée.
+          Sors de l&apos;ombre. Montre ce que tu sais faire.
           <br />
           <span className="text-white/50">
             La plateforme panafricaine qui rend les talents visibles et les
