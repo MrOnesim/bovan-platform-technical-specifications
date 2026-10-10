@@ -627,31 +627,23 @@
 
 /* ============================================================
    SECTION A — HERO "forge / braises"
-   Hand-rolled: panning grid + drifting glows + rising embers.
+   The panning grid, drifting glows and rising embers used to be
+   infinite animations here. They were removed to keep the background
+   static: four simultaneous loops behind the headline competed with
+   the slogan reveal and repainted every frame. The keyframes that
+   drove them were removed with their last usage.
    ============================================================ */
-@keyframes grid-pan {
-  from { background-position: 0 0; }
-  to   { background-position: 0 32px; }
-}
-.hero-grid-pan {
-  animation: grid-pan 10s linear infinite;
-}
-
-@keyframes glow-float {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-  50%      { transform: translate3d(24px, -28px, 0) scale(1.1); }
-}
-.glow-float { animation: glow-float 14s ease-in-out infinite; }
-.glow-float-slow { animation: glow-float 22s ease-in-out infinite; }
 
 .ember-field {
   position: absolute;
   inset: 0;
   overflow: hidden;
 }
+/* Static embers. The rising animation was removed with the other hero
+   background motion; the dots remain as a fixed starfield-like texture. */
 .ember {
   position: absolute;
-  bottom: -12px;
+  bottom: 12%;
   width: 4px;
   height: 4px;
   border-radius: 9999px;
@@ -661,17 +653,7 @@
     rgba(244, 123, 0, 0.9) 45%,
     rgba(244, 123, 0, 0) 72%
   );
-  opacity: 0;
-  animation-name: ember-rise;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-  will-change: transform, opacity;
-}
-@keyframes ember-rise {
-  0%   { transform: translateY(0) scale(0.6); opacity: 0; }
-  12%  { opacity: 0.9; }
-  70%  { opacity: 0.45; }
-  100% { transform: translateY(-78vh) scale(1.15); opacity: 0; }
+  opacity: 0.35;
 }
 
 /* ============================================================

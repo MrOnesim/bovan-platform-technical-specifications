@@ -207,9 +207,13 @@ export default async function HomePage() {
       {/* HERO */}
       <section className="relative overflow-hidden bg-[#0a0a0a] text-white">
         <EnergyBeamLazy />
-        <div className="absolute inset-0 bg-grid-dark hero-grid-pan opacity-30" />
-        <div className="absolute top-1/4 -left-32 w-96 h-96 glow-orange glow-float opacity-30" />
-        <div className="absolute bottom-0 -right-32 w-96 h-96 glow-orange glow-float-slow opacity-20" />
+        {/* Background motion removed: the panning grid, drifting glows and
+            rising embers were four simultaneous infinite animations behind the
+            headline. They competed with the slogan reveal for attention and
+            cost repaints on every frame. The layers stay, just static. */}
+        <div className="absolute inset-0 bg-grid-dark opacity-30" />
+        <div className="absolute top-1/4 -left-32 w-96 h-96 glow-orange opacity-30" />
+        <div className="absolute bottom-0 -right-32 w-96 h-96 glow-orange opacity-20" />
         <div className="ember-field" aria-hidden="true">
           {EMBERS.map((e, i) => (
             <span
@@ -217,8 +221,6 @@ export default async function HomePage() {
               className="ember"
               style={{
                 left: e.left,
-                animationDelay: e.delay,
-                animationDuration: e.duration,
                 transform: `scale(${e.scale})`,
               }}
             />
