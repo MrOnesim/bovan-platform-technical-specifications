@@ -11,7 +11,7 @@ import {
 } from "@/db/schema";
 import { eq, sql, desc } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
-import { AfricaMap } from "@/components/AfricaMap";
+import { AfricaMapLazy } from "@/components/AfricaMapLazy";
 import { HeroSlogan } from "@/components/HeroSlogan";
 import EnergyBeamLazy from "@/components/ui/energy-beam-lazy";
 import {
@@ -367,13 +367,13 @@ export default async function HomePage() {
               </Link>
             </div>
 
-            <div className="bg-[#0a0a0a] rounded-3xl p-6 md:p-10 relative overflow-hidden">
-              {/* Aurora UI mesh — ui-ux-pro-max skill (flowing gradient,
-                  9s loop, complementary blue-orange, blend screen). */}
-              <div className="absolute inset-0 aurora-mesh" aria-hidden="true" />
+            <div className="bg-black rounded-3xl p-6 md:p-10 relative overflow-hidden">
+              {/* Flat black ground. An animated aurora mesh used to sit here,
+                  but it washed the map out: the orange country fills lost
+                  contrast against it and the glow fought the lit borders. */}
               <div className="absolute inset-0 bg-grid-dark opacity-10" aria-hidden="true" />
               <div className="relative">
-                <AfricaMap stats={countryStats} />
+                <AfricaMapLazy stats={countryStats} />
               </div>
               <div className="mt-5 flex flex-wrap items-center justify-between gap-4 text-xs text-white/40 px-2">
                 {/* Matches the data ramp used by AfricaMap exactly. */}
