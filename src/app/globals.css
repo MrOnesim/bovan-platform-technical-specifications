@@ -1,6 +1,23 @@
 @import "tailwindcss";
 
 /* ============================================================
+   Theme aliases
+   `--bg-dark` is the deep surface used by immersive sections such as the
+   hero energy beam. It maps onto the existing ink token rather than a pure
+   #000 so the beam blends with the rest of the dark UI instead of sitting on
+   a visibly different black.
+   ============================================================ */
+
+:root {
+  --bg-dark: #0a0a0a;
+}
+
+@theme inline {
+  --color-background: var(--bg-dark);
+  --color-foreground: #ffffff;
+}
+
+/* ============================================================
    OCD Design System
    "Les opportunités, c'est dehors."
    ============================================================ */
@@ -447,6 +464,13 @@
 .slogan-line-4 { animation-delay: 0.65s; }
 .slogan-line-5 { animation-delay: 0.85s; }
 .slogan-line-6 { animation-delay: 1.05s; }
+
+/* The CTA row is also a .slogan-line, and .slogan-line forces display:block.
+   Re-declare display:flex after it so the flex gap between the two buttons
+   actually applies; specificity matches and this rule comes later. */
+.slogan-line-5.slogan-line {
+  display: flex;
+}
 
 .slogan-cursor {
   display: inline-block;

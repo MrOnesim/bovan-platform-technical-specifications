@@ -68,19 +68,19 @@ export function HeroSlogan() {
       )}
       {stage >= 4 && (
         <div
-          className="slogan-line slogan-line-5 mt-10 flex flex-col sm:flex-row items-center justify-center gap-3"
+          className="slogan-line slogan-line-5 mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-5"
           style={{ animationDelay: "0.15s" }}
         >
           <Link
             href="/auth/register?role=talent"
-            className="btn-primary group"
+            className="btn-primary group w-full sm:w-auto"
           >
             Je suis un talent
             <ArrowRight aria-hidden="true" className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
           <Link
             href="/auth/register?role=company"
-            className="btn-ghost group"
+            className="btn-ghost group w-full sm:w-auto"
           >
             Je suis une entreprise
             <ArrowRight aria-hidden="true" className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

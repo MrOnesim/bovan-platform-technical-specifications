@@ -12,6 +12,7 @@ import { eq, sql, desc } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 import { AfricaMap } from "@/components/AfricaMap";
 import { HeroSlogan } from "@/components/HeroSlogan";
+import EnergyBeam from "@/components/ui/energy-beam";
 import {
   Briefcase,
   Users,
@@ -204,6 +205,7 @@ export default async function HomePage() {
     <div>
       {/* HERO */}
       <section className="relative overflow-hidden bg-[#0a0a0a] text-white">
+        <EnergyBeam />
         <div className="absolute inset-0 bg-grid-dark hero-grid-pan opacity-30" />
         <div className="absolute top-1/4 -left-32 w-96 h-96 glow-orange glow-float opacity-30" />
         <div className="absolute bottom-0 -right-32 w-96 h-96 glow-orange glow-float-slow opacity-20" />
