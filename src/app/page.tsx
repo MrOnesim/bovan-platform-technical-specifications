@@ -370,8 +370,10 @@ export default async function HomePage() {
             <div className="bg-black rounded-3xl p-6 md:p-10 relative overflow-hidden">
               {/* Flat black ground. An animated aurora mesh used to sit here,
                   but it washed the map out: the orange country fills lost
-                  contrast against it and the glow fought the lit borders. */}
-              <div className="absolute inset-0 bg-grid-dark opacity-10" aria-hidden="true" />
+                  contrast against it and the glow fought the lit borders.
+                  The grid is kept very faint (18%) purely to stop the large
+                  black panel reading as a flat void. */}
+              <div className="absolute inset-0 bg-grid-dark opacity-[0.18]" aria-hidden="true" />
               <div className="relative">
                 <AfricaMapLazy stats={countryStats} />
               </div>
