@@ -35,16 +35,22 @@ function loadUnicornStudio(): Promise<boolean> {
   if (window.UnicornStudio) return Promise.resolve(true);
   if (scriptPromise) return scriptPromise;
 
-  scriptPromise = new Promise<boolean>((resolve) => {
-    const script = document.createElement("script");
-    script.src = SCRIPT_SRC;
-    script.async = true;
-
-    script.onload = () => resolve(Boolean(window.UnicornStudio));
-    script.onerror = () => resolve(false);
-
-    document.head.appendChild(script);
-  });
+  scriptPromise = (async () => {
+    try {
+      // Fetch + evaluate rather than a <script src> tag: the UMD bundle does
+      // not reliably fire onload when injected asynchronously in every
+      // browser/CSP combination, and fetching lets us surface load failures.
+      const res = await fetch(SCRIPT_SRC, { mode: "cors" });
+      if (!res.ok) return false;
+      const code = await res.text();
+      // Execute with `window` as `this` so the UMD factory attaches the
+      // `UnicornStudio` global to the page rather than to a local scope.
+      new Function(code).call(window);
+      return typeof window.UnicornStudio !== "undefined";
+    } catch {
+      return false;
+    }
+  })();
 
   return scriptPromise;
 }
