@@ -6,12 +6,24 @@ import Link from "next/link";
 
 export function HeroSlogan() {
   const [stage, setStage] = useState(0);
+
   useEffect(() => {
+    // Users who ask for reduced motion get the full hero immediately, with no
+    // staged reveal. The timers below only sequence the entrance animation.
+    if (
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      // Deferred to a microtask so the reveal lands in the same commit batch as
+      // mount rather than during the effect body.
+      const t = setTimeout(() => setStage(4), 0);
+      return () => clearTimeout(t);
+    }
     const timers = [
-      setTimeout(() => setStage(1), 200),
-      setTimeout(() => setStage(2), 450),
-      setTimeout(() => setStage(3), 700),
-      setTimeout(() => setStage(4), 950),
+      setTimeout(() => setStage(1), 120),
+      setTimeout(() => setStage(2), 280),
+      setTimeout(() => setStage(3), 440),
+      setTimeout(() => setStage(4), 600),
     ];
     return () => timers.forEach(clearTimeout);
   }, []);

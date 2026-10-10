@@ -223,11 +223,11 @@ export default async function HomePage() {
         </div>
         <div className="absolute inset-0 bg-linear-to-b from-transparent via-transparent to-[#0a0a0a]" />
 
-        <div className="container-bovan relative py-20 md:py-32 lg:py-40">
-          <div className="text-center max-w-5xl mx-auto">
+        <div className="container-bovan relative flex min-h-[100svh] items-center py-16 md:py-24">
+          <div className="text-center max-w-5xl mx-auto w-full">
             <HeroSlogan />
 
-            <div className="mt-16 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-white/40">
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-white/40">
               <span className="flex items-center gap-1.5">
                 <Globe2 className="w-4 h-4 text-[#f47b00]" />
                 {stats.countries} pays africains

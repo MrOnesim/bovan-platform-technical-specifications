@@ -549,20 +549,24 @@
   background-size: 32px 32px;
 }
 
+/* Every stop stays within the brand orange family, so the word stays legible on
+   the near-black hero no matter where the sweep is frozen. A darker stop in this
+   gradient would turn part of the word black-on-black once the animation ends. */
 .shimmer-text {
   background: linear-gradient(
     90deg,
-    #0a0a0a 0%,
-    #f47b00 25%,
-    #0a0a0a 50%,
-    #f47b00 75%,
-    #0a0a0a 100%
+    #f47b00 0%,
+    #ffc266 35%,
+    #f47b00 60%,
+    #ffb347 80%,
+    #f47b00 100%
   );
   background-size: 200% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: shimmer 6s linear infinite;
+  /* Plays once on entrance rather than looping forever above the fold. */
+  animation: shimmer 2.6s ease-in-out 1;
 }
 
 /* ============================================================
