@@ -507,15 +507,18 @@
    outline, the hover lift and the focus ring.
    The base stroke was #0a0a0a on a #0a0a0a surface, which made every border
    invisible. Borders now carry a constant warm glow so the continent reads as
-   a lit shape at rest, and intensify on hover/focus rather than appearing. */
+   a lit shape at rest, and intensify on hover/focus rather than appearing.
+   The glow is deliberately static: this map renders ~50 paths, and animating a
+   drop-shadow on each one costs a filter repaint per country for an effect the
+   static shadow already delivers. A breathing version also competed with the
+   fill ramp, blurring the "has data" signal the map encodes. */
 .africa-country {
   stroke: #f47b00;
   stroke-width: 0.9;
-  stroke-opacity: 0.55;
+  stroke-opacity: 0.5;
   stroke-linejoin: round;
   paint-order: stroke fill;
-  animation: border-breathe 5s ease-in-out infinite;
-  filter: drop-shadow(0 0 4px rgba(244, 123, 0, 0.45));
+  filter: drop-shadow(0 0 5px rgba(244, 123, 0, 0.5));
   transition:
     filter 0.25s ease,
     stroke 0.25s ease,
@@ -526,7 +529,6 @@
 }
 .africa-country:hover,
 .africa-country:focus-visible {
-  animation-play-state: paused;
   filter: drop-shadow(0 0 12px rgba(244, 123, 0, 0.75));
   stroke: #ffc266;
   stroke-opacity: 1;
@@ -534,19 +536,6 @@
 }
 .africa-country:focus-visible {
   stroke-width: 2;
-}
-
-/* Slow, low-amplitude pulse. Animates stroke-opacity only, so it never moves
-   geometry and never causes the paths to repaint their fill. */
-@keyframes border-breathe {
-  0%, 100% { stroke-opacity: 0.45; }
-  50% { stroke-opacity: 0.75; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .africa-country {
-    animation: none;
-  }
 }
 
 .map-pulse {
