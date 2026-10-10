@@ -13,7 +13,6 @@ import { eq, sql, desc } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 import { AfricaMapLazy } from "@/components/AfricaMapLazy";
 import { HeroSlogan } from "@/components/HeroSlogan";
-import EnergyBeamLazy from "@/components/ui/energy-beam-lazy";
 import {
   Briefcase,
   Users,
@@ -33,23 +32,6 @@ import {
 import { TalentCard } from "@/components/TalentCard";
 import { CompanyCard } from "@/components/CompanyCard";
 import { OpportunityCard } from "@/components/OpportunityCard";
-
-/* Hand-rolled hero embers (Section A). Positions are hard-coded so the
-   server and client render the same markup — no random, no hydration drift. */
-const EMBERS = [
-  { left: "6%", delay: "0s", duration: "9s", scale: 1 },
-  { left: "14%", delay: "3.2s", duration: "12s", scale: 0.7 },
-  { left: "23%", delay: "1.4s", duration: "10s", scale: 1.2 },
-  { left: "31%", delay: "5.6s", duration: "13s", scale: 0.8 },
-  { left: "40%", delay: "2.1s", duration: "9.5s", scale: 1 },
-  { left: "48%", delay: "6.8s", duration: "11s", scale: 0.6 },
-  { left: "57%", delay: "0.8s", duration: "12.5s", scale: 1.1 },
-  { left: "65%", delay: "4.3s", duration: "10.5s", scale: 0.9 },
-  { left: "73%", delay: "7.5s", duration: "14s", scale: 0.7 },
-  { left: "81%", delay: "2.9s", duration: "11.5s", scale: 1.2 },
-  { left: "89%", delay: "5.1s", duration: "9.8s", scale: 0.8 },
-  { left: "95%", delay: "1.7s", duration: "13s", scale: 1 },
-];
 
 /* The page stays dynamic (the layout reads the session cookie) but the
    homepage aggregates are public and change slowly, so they are cached for a
@@ -206,27 +188,9 @@ export default async function HomePage() {
     <div>
       {/* HERO */}
       <section className="relative overflow-hidden bg-[#0a0a0a] text-white">
-        <EnergyBeamLazy />
-        {/* Background motion removed: the panning grid, drifting glows and
-            rising embers were four simultaneous infinite animations behind the
-            headline. They competed with the slogan reveal for attention and
-            cost repaints on every frame. The layers stay, just static. */}
-        <div className="absolute inset-0 bg-grid-dark opacity-30" />
-        <div className="absolute top-1/4 -left-32 w-96 h-96 glow-orange opacity-30" />
-        <div className="absolute bottom-0 -right-32 w-96 h-96 glow-orange opacity-20" />
-        <div className="ember-field" aria-hidden="true">
-          {EMBERS.map((e, i) => (
-            <span
-              key={i}
-              className="ember"
-              style={{
-                left: e.left,
-                transform: `scale(${e.scale})`,
-              }}
-            />
-          ))}
-        </div>
-        <div className="absolute inset-0 bg-linear-to-b from-transparent via-transparent to-[#0a0a0a]" />
+        {/* The hero background layers (WebGL beam, grid, glows and embers) were
+            removed so the slogan carries the section on its own. The dark
+            surface stays: the headline is white and needs it for contrast. */}
 
         <div className="container-bovan relative flex min-h-[100svh] items-center py-16 md:py-24">
           <div className="text-center max-w-5xl mx-auto w-full">

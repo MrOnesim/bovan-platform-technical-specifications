@@ -589,24 +589,17 @@
   background-size: 32px 32px;
 }
 
-/* Every stop stays within the brand orange family, so the word stays legible on
-   the near-black hero no matter where the sweep is frozen. A darker stop in this
-   gradient would turn part of the word black-on-black once the animation ends. */
-.shimmer-text {
-  background: linear-gradient(
-    90deg,
-    #f47b00 0%,
-    #ffc266 35%,
-    #f47b00 60%,
-    #ffb347 80%,
-    #f47b00 100%
-  );
-  background-size: 200% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  /* Plays once on entrance rather than looping forever above the fold. */
-  animation: shimmer 2.6s ease-in-out 1;
+/* "DEHORS." is the brand's payoff word, so it carries the full brand orange
+   as a flat fill (not a gradient) plus a soft outer glow. The previous
+   shimmer used a gradient clip, which tinted parts of the word lighter and
+   left it dependent on where the sweep stopped. A solid colour plus a static
+   drop-shadow keeps the word pure orange at every pixel while still reading
+   as lit. */
+.dehors-glow {
+  color: #f47b00;
+  -webkit-text-fill-color: #f47b00;
+  filter: drop-shadow(0 0 14px rgba(244, 123, 0, 0.55))
+          drop-shadow(0 0 34px rgba(244, 123, 0, 0.28));
 }
 
 /* ============================================================
@@ -634,53 +627,12 @@
    drove them were removed with their last usage.
    ============================================================ */
 
-.ember-field {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-}
-/* Static embers. The rising animation was removed with the other hero
-   background motion; the dots remain as a fixed starfield-like texture. */
-.ember {
-  position: absolute;
-  bottom: 12%;
-  width: 4px;
-  height: 4px;
-  border-radius: 9999px;
-  background: radial-gradient(
-    circle,
-    #ffca7a 0%,
-    rgba(244, 123, 0, 0.9) 45%,
-    rgba(244, 123, 0, 0) 72%
-  );
-  opacity: 0.35;
-}
-
 /* ============================================================
-   SECTION B — AFRICA MAP "Aurora UI"
-   Driven by the ui-ux-pro-max skill:
-   flowing mesh gradient · 8-12s loop · complementary blue-orange ·
-   mix-blend-mode: screen · saturate(1.2) · one animated element.
+   SECTION B — AFRICA MAP
+   The animated aurora mesh that used to sit behind the map was removed:
+   it washed out the orange country fills and competed with the lit
+   borders. The map now sits on flat black.
    ============================================================ */
-@keyframes aurora-drift {
-  0%   { transform: translate3d(-3%, -2%, 0) scale(1.05) rotate(0deg); }
-  100% { transform: translate3d(3%, 3%, 0) scale(1.18) rotate(8deg); }
-}
-.aurora-mesh {
-  background:
-    conic-gradient(
-      from 210deg at 32% 28%,
-      transparent 0deg,
-      rgba(244, 123, 0, 0.5) 70deg,
-      transparent 150deg
-    ),
-    radial-gradient(60% 60% at 72% 30%, rgba(37, 99, 235, 0.45), transparent 66%),
-    radial-gradient(55% 60% at 24% 76%, rgba(244, 123, 0, 0.5), transparent 66%);
-  filter: blur(48px) saturate(1.2);
-  mix-blend-mode: screen;
-  animation: aurora-drift 9s ease-in-out infinite alternate;
-  will-change: transform;
-}
 
 /* ============================================================
    Reduced motion

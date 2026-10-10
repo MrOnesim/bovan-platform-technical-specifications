@@ -9,3 +9,6 @@ build
 
 .vercel
 .env*
+
+# Local server logs written by the dev/prod start scripts
+*.log

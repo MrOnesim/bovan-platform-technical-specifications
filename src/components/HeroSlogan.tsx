@@ -49,7 +49,7 @@ export function HeroSlogan() {
           }`}
           style={{ color: "#f47b00" }}
         >
-          <span className="shimmer-text">DEHORS.</span>
+          <span className="dehors-glow">DEHORS.</span>
           <span className="slogan-cursor" style={{ background: "#f47b00" }} />
         </span>
       </h1>
