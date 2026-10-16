@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { navigateAfterAuthChange } from "@/lib/utils";
 import { Plus, X, Loader2, Check } from "lucide-react";
 
 interface Country {
@@ -24,7 +25,7 @@ export function NewOpportunityForm({
   countries: Country[];
   skills: Skill[];
 }) {
-  const router = useRouter();
+  const router = useRouter(); // for the Cancel button only
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
@@ -79,8 +80,7 @@ export function NewOpportunityForm({
       if (!res.ok) {
         setError(data.error || "Erreur.");
       } else {
-        router.push(`/opportunites/${data.slug}`);
-        router.refresh();
+        navigateAfterAuthChange(`/opportunites/${data.slug}`);
       }
     } catch {
       setError("Erreur réseau.");

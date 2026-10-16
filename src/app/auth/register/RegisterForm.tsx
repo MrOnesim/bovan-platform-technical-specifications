@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Logo } from "@/components/Logo";
+import { navigateAfterAuthChange } from "@/lib/utils";
 import { ArrowRight, Mail, Lock, User, Building2, Check } from "lucide-react";
 
 interface Country {
@@ -18,7 +19,6 @@ interface Props {
 }
 
 export function RegisterForm({ countries }: Props) {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [role, setRole] = useState<"TALENT" | "COMPANY">(
     (searchParams.get("role") as "TALENT" | "COMPANY") || "TALENT"
@@ -56,8 +56,9 @@ export function RegisterForm({ countries }: Props) {
       if (!res.ok) {
         setError(data.error || "Erreur d'inscription.");
       } else {
-        router.push(role === "COMPANY" ? "/company/dashboard" : "/dashboard");
-        router.refresh();
+        navigateAfterAuthChange(
+          role === "COMPANY" ? "/company/dashboard" : "/dashboard"
+        );
       }
     } catch {
       setError("Erreur réseau.");

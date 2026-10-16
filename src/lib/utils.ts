@@ -38,6 +38,20 @@ export function timeAgo(d: Date | string | null | undefined): string {
   return formatDate(date);
 }
 
+/** Navigates with a full document load, for the moments right after a
+    mutation changed who the visitor is: login, register, logout.
+
+    `router.push()` alone is not enough — the root layout is preserved across
+    a client-side navigation, so the Navbar would keep rendering the session
+    it had before the cookie changed. The usual `router.push(); router.refresh()`
+    pair does fix that, but firing the refresh while the push is still in
+    flight intermittently cancels the navigation and leaves the visitor on the
+    page they started from. A full load re-renders layout and page together,
+    from the server, with no ordering to get wrong. */
+export function navigateAfterAuthChange(href: string) {
+  window.location.assign(href);
+}
+
 export function initials(firstName?: string | null, lastName?: string | null) {
   const f = (firstName || "").trim()[0] || "";
   const l = (lastName || "").trim()[0] || "";

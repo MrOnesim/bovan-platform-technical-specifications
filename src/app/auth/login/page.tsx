@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Logo } from "@/components/Logo";
+import { navigateAfterAuthChange } from "@/lib/utils";
 import { ArrowRight, Mail, Lock, Eye, EyeOff } from "lucide-react";
 
 /* Seeded accounts from src/db/seed.ts, all sharing the same password. */
@@ -14,7 +14,6 @@ const DEMO_ACCOUNTS = [
 ] as const;
 
 export default function LoginPage() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPw, setShowPw] = useState(false);
@@ -35,15 +34,16 @@ export default function LoginPage() {
         setError(data.error || "Erreur de connexion.");
         return false;
       }
-      // route based on role (we know from response)
-      if (data.user?.role === "COMPANY") {
-        router.push("/company/dashboard");
-      } else if (data.user?.role === "ADMIN") {
-        router.push("/admin");
-      } else {
-        router.push("/dashboard");
-      }
-      router.refresh();
+      // A full load, not a client-side push: the root layout renders the
+      // session and is preserved across a push, so the Navbar would keep
+      // showing the logged-out state.
+      navigateAfterAuthChange(
+        data.user?.role === "COMPANY"
+          ? "/company/dashboard"
+          : data.user?.role === "ADMIN"
+            ? "/admin"
+            : "/dashboard"
+      );
       return true;
     } catch {
       setError("Erreur réseau.");
