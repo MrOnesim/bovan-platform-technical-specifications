@@ -1,72 +1,51 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { getCurrentUser } from "@/lib/auth";
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
-
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ?? "https://bovan.africa";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "");
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  ...(siteUrl ? { metadataBase: new URL(siteUrl) } : {}),
   title: {
-    default: "OCD — Les opportunités, c'est dehors.",
+    default: "OCD — Votre activité mérite d’être vue",
     template: "%s · OCD",
   },
-  icons: {
-    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
-    apple: [{ url: "/apple-icon.png" }],
-  },
+  icons: { icon: [{ url: "/icon.svg", type: "image/svg+xml" }] },
   description:
-    "Plateforme panafricaine qui connecte les talents africains aux entreprises du continent et du monde entier.",
+    "OCD accompagne les entrepreneurs, commerçants, artisans et prestataires dans la présentation de leurs activités en direct sur les réseaux sociaux.",
   keywords: [
     "OCD",
-    "talents africains",
-    "opportunités",
-    "emploi Afrique",
-    "candidature spontanée",
-    "recrutement",
+    "promotion commerciale",
+    "publicité réseaux sociaux",
+    "live shopping",
+    "visibilité entrepreneur",
+    "entrepreneurs Bénin",
+    "marketing digital",
   ],
   openGraph: {
-    title: "OCD — Les opportunités, c'est dehors.",
+    title: "OCD — Votre activité mérite d’être vue",
     description:
-      "Les talents africains se rendent visibles. Les entreprises viennent les chercher.",
-    url: siteUrl,
+      "Présentez vos produits et services en direct, échangez avec le public et faites découvrir votre activité.",
     siteName: "OCD",
     locale: "fr_FR",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "OCD — Les opportunités, c'est dehors.",
+    title: "OCD — Votre activité mérite d’être vue",
     description:
-      "Les talents africains se rendent visibles. Les entreprises viennent les chercher.",
+      "Présentez vos produits et services en direct et faites découvrir votre activité.",
   },
 };
 
-export default async function RootLayout({ children }: { children: ReactNode }) {
-  const session = await getCurrentUser();
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="fr" className={inter.variable}>
-      <body
-        className="bg-[#fafafa] text-[#0a0a0a] antialiased min-h-screen flex flex-col"
-        style={{ fontFamily: "var(--font-inter), Inter, system-ui, sans-serif" }}
-      >
-        <a
-          href="#main-content"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-[100] focus:rounded-full focus:bg-[#0a0a0a] focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-white"
-        >
-          Aller au contenu principal
-        </a>
-        <Navbar session={session} />
+    <html lang="fr">
+      <body className="bg-[#fbf9f6] text-[#1d1a17] antialiased min-h-screen flex flex-col" style={{ fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif" }}>
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-[100] focus:rounded-full focus:bg-[#171512] focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-white">Aller au contenu principal</a>
+        <Navbar />
         <main id="main-content" className="flex-1">{children}</main>
         <Footer />
       </body>

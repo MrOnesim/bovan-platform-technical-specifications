@@ -1,673 +1,176 @@
 import Link from "next/link";
-import dynamic from "next/dynamic";
-import { db } from "@/db";
 import {
-  countries,
-  talentProfiles,
-  companies,
-  opportunities,
-  users,
-  applications,
-} from "@/db/schema";
-import { eq, sql, desc } from "drizzle-orm";
-import { unstable_cache } from "next/cache";
-import { AfricaMapLazy } from "@/components/AfricaMapLazy";
-import { HeroSlogan } from "@/components/HeroSlogan";
-import {
-  Briefcase,
-  Users,
-  Building2,
-  User,
-  Globe2,
+  ArrowDown,
   ArrowRight,
-  Search,
-  CheckCircle2,
-  TrendingUp,
-  Award,
-  Eye,
-  Star,
-  Heart,
-  MapPin,
+  BadgeCheck,
+  Check,
+  ChevronDown,
+  Clapperboard,
+  MessageCircle,
+  Megaphone,
+  Palette,
+  Radio,
+  ShoppingBag,
+  Sparkles,
+  Users,
+  Video,
 } from "lucide-react";
-import { TalentCard } from "@/components/TalentCard";
-import { CompanyCard } from "@/components/CompanyCard";
-import { OpportunityCard } from "@/components/OpportunityCard";
 
-/* The page stays dynamic (the layout reads the session cookie) but the
-   homepage aggregates are public and change slowly, so they are cached for a
-   short window instead of running 5 queries on every request. */
-export const revalidate = 60;
+const steps = [
+  { number: "01", title: "Vous réservez", text: "Choisissez une formule et échangez avec l’équipe OCD pour définir le créneau et les besoins de votre activité." },
+  { number: "02", title: "On prépare le direct", text: "Vous venez avec vos produits et votre téléphone. L’équipe prépare l’espace, le matériel et le déroulé de la présentation." },
+  { number: "03", title: "Vous présentez", text: "Parlez de votre activité, montrez vos produits, annoncez vos prix et partagez vos moyens de contact avec l’audience." },
+  { number: "04", title: "Vous faites le suivi", text: "Répondez aux messages et relancez les personnes intéressées après la diffusion pour transformer les échanges en ventes." },
+];
 
-const getStats = unstable_cache(
-  async () => {
-    const [t] = await db
-      .select({ count: sql<number>`count(*)::int` })
-      .from(talentProfiles);
-    const [c] = await db
-      .select({ count: sql<number>`count(*)::int` })
-      .from(companies);
-    const [o] = await db
-      .select({ count: sql<number>`count(*)::int` })
-      .from(opportunities)
-      .where(eq(opportunities.status, "PUBLISHED"));
-    const [a] = await db
-      .select({ count: sql<number>`count(*)::int` })
-      .from(applications);
-    const [u] = await db
-      .select({ count: sql<number>`count(*)::int` })
-      .from(users);
-    const [countriesCount] = await db
-      .select({ count: sql<number>`count(*)::int` })
-      .from(countries);
-    return {
-      talents: t?.count ?? 0,
-      companies: c?.count ?? 0,
-      opportunities: o?.count ?? 0,
-      applications: a?.count ?? 0,
-      users: u?.count ?? 0,
-      countries: countriesCount?.count ?? 0,
-    };
-  },
-  ["home-stats"],
-  { revalidate: 60 }
-);
+const services = [
+  { icon: Video, title: "Diffusion en direct", text: "Une présentation vivante de vos produits, services, entreprise ou point de vente." },
+  { icon: Megaphone, title: "Publicité commerciale", text: "Une mise en avant de votre activité auprès de la communauté et sur les réseaux sociaux." },
+  { icon: Palette, title: "Création d’affiches", text: "Des visuels promotionnels pour annoncer votre passage et accompagner votre communication." },
+  { icon: Sparkles, title: "Stories & contenus", text: "Des publications courtes pour prolonger la visibilité avant ou après votre direct." },
+  { icon: Clapperboard, title: "Décor & régie", text: "Un espace de présentation préparé et une équipe qui coordonne le déroulement du live." },
+  { icon: MessageCircle, title: "Interaction en direct", text: "Les internautes peuvent poser leurs questions et demander comment vous joindre ou commander." },
+];
 
-const getCountryStats = unstable_cache(
-  async () => {
-    return db
-      .select({
-        iso2: countries.iso2,
-        nameFr: countries.nameFr,
-        flag: countries.flag,
-        labelX: countries.labelX,
-        labelY: countries.labelY,
-        talentsCount: sql<number>`(SELECT COUNT(*)::int FROM talent_profiles tp JOIN users u ON u.id = tp.user_id WHERE u.country_id = countries.id)`,
-        companiesCount: sql<number>`(SELECT COUNT(*)::int FROM companies c WHERE c.country_id = countries.id)`,
-        opportunitiesCount: sql<number>`(SELECT COUNT(*)::int FROM opportunities o WHERE o.country_id = countries.id AND o.status = 'PUBLISHED')`,
-      })
-      .from(countries);
-  },
-  ["home-country-stats"],
-  { revalidate: 60 }
-);
+const audiences = ["Commerçants & distributeurs", "Mode & accessoires", "Téléphones & électronique", "Restaurants & alimentation", "Artisans & créateurs", "Prestataires de services", "Entreprises & marques", "Entrepreneurs locaux"];
 
-const getFeaturedTalents = unstable_cache(
-  async () => {
-    return db
-      .select({
-        id: talentProfiles.id,
-        slug: talentProfiles.slug,
-        headline: talentProfiles.headline,
-        profession: talentProfiles.profession,
-        availability: talentProfiles.availability,
-        yearsExperience: talentProfiles.yearsExperience,
-        experienceLevel: talentProfiles.experienceLevel,
-        firstName: users.firstName,
-        lastName: users.lastName,
-        avatarUrl: users.avatarUrl,
-        countryName: countries.nameFr,
-        countryFlag: countries.flag,
-        city: sql<string | null>`(SELECT name FROM cities WHERE id = ${users.cityId})`,
-      })
-      .from(talentProfiles)
-      .innerJoin(users, eq(users.id, talentProfiles.userId))
-      .leftJoin(countries, eq(countries.id, users.countryId))
-      .where(eq(talentProfiles.isSpontaneous, true))
-      .orderBy(desc(talentProfiles.viewsCount))
-      .limit(6);
-  },
-  ["home-featured-talents"],
-  { revalidate: 60, tags: ["talents"] }
-);
+const packages = [
+  { name: "Découverte", duration: "1 heure", price: "5 000", description: "Pour présenter une sélection de produits ou faire découvrir votre activité.", points: ["Passage en direct", "Présentation de votre offre", "Échanges avec l’audience"] },
+  { name: "Visibilité", duration: "4 heures", price: "15 000", description: "Un format plus long pour prendre le temps de présenter votre catalogue.", points: ["Créneau de 4 heures", "Présentation détaillée", "Temps pour les questions"] , featured: true },
+  { name: "Régularité", duration: "3 × 4 heures / semaine", price: "40 000", description: "Trois passages dans la semaine pour répéter votre présence et vos offres.", points: ["3 passages de 4 heures", "Présence répartie sur la semaine", "Suivi des demandes reçues"] },
+];
 
-const getFeaturedCompanies = unstable_cache(
-  async () => {
-    return db
-      .select({
-        id: companies.id,
-        name: companies.name,
-        slug: companies.slug,
-        industry: companies.industry,
-        description: companies.description,
-        logo: companies.logo,
-        verification: companies.verification,
-        countryName: countries.nameFr,
-        countryFlag: countries.flag,
-        opportunitiesCount: sql<number>`(SELECT COUNT(*)::int FROM opportunities o WHERE o.company_id = ${companies.id} AND o.status = 'PUBLISHED')`,
-      })
-      .from(companies)
-      .leftJoin(countries, eq(countries.id, companies.countryId))
-      .orderBy(desc(sql`${companies.createdAt}`))
-      .limit(4);
-  },
-  ["home-featured-companies"],
-  { revalidate: 60, tags: ["companies"] }
-);
-
-const getFeaturedOpportunities = unstable_cache(
-  async () => {
-    return db
-      .select({
-        id: opportunities.id,
-        slug: opportunities.slug,
-        title: opportunities.title,
-        description: opportunities.description,
-        location: opportunities.location,
-        employmentType: opportunities.employmentType,
-        experienceLevel: opportunities.experienceLevel,
-        salaryMin: opportunities.salaryMin,
-        salaryMax: opportunities.salaryMax,
-        currency: opportunities.currency,
-        remote: opportunities.remote,
-        skills: opportunities.skills,
-        companyName: companies.name,
-        companySlug: companies.slug,
-        companyLogo: companies.logo,
-        companyVerified: companies.verification,
-      })
-      .from(opportunities)
-      .innerJoin(companies, eq(companies.id, opportunities.companyId))
-      .where(eq(opportunities.status, "PUBLISHED"))
-      .orderBy(desc(opportunities.publishedAt))
-      .limit(6);
-  },
-  ["home-featured-opportunities"],
-  { revalidate: 60, tags: ["opportunities"] }
-);
-
-export default async function HomePage() {
-  const [stats, countryStats, talents, companiesList, opps] = await Promise.all([
-    getStats(),
-    getCountryStats(),
-    getFeaturedTalents(),
-    getFeaturedCompanies(),
-    getFeaturedOpportunities(),
-  ]);
-
+export default function HomePage() {
   return (
-    <div>
-      {/* HERO */}
-      <section className="relative overflow-hidden bg-[#0a0a0a] text-white">
-        {/* The hero background layers (WebGL beam, grid, glows and embers) were
-            removed so the slogan carries the section on its own. The dark
-            surface stays: the headline is white and needs it for contrast. */}
-
-        <div className="container-bovan relative flex min-h-[100svh] items-center py-16 md:py-24">
-          <div className="text-center max-w-5xl mx-auto w-full">
-            <HeroSlogan />
-
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-white/40">
-              <span className="flex items-center gap-1.5">
-                <Globe2 className="w-4 h-4 text-[#f47b00]" />
-                {stats.countries} pays africains
-              </span>
-              <span className="text-white/20">·</span>
-              <span className="flex items-center gap-1.5">
-                <Users className="w-4 h-4 text-[#f47b00]" />
-                {stats.talents.toLocaleString("fr-FR")} talents
-              </span>
-              <span className="text-white/20">·</span>
-              <span className="flex items-center gap-1.5">
-                <Building2 className="w-4 h-4 text-[#f47b00]" />
-                {stats.companies.toLocaleString("fr-FR")} entreprises
-              </span>
-              <span className="text-white/20">·</span>
-              <span className="flex items-center gap-1.5">
-                <Briefcase className="w-4 h-4 text-[#f47b00]" />
-                {stats.opportunities.toLocaleString("fr-FR")} opportunités
-              </span>
+    <div className="overflow-hidden bg-[#fbf9f6] text-[#1d1a17]">
+      <section className="ocd-hero relative isolate bg-[#171512] text-white">
+        <div aria-hidden="true" className="ocd-hero-glow" />
+        <div className="container-bovan relative z-10 grid min-h-[680px] items-center gap-12 py-16 md:min-h-[740px] md:grid-cols-[1.02fr_.98fr] md:py-24">
+          <div className="max-w-2xl">
+            <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-3.5 py-2 text-xs font-semibold tracking-[.12em] text-white/75 uppercase">
+              <span className="h-2 w-2 rounded-full bg-[#f47b00] shadow-[0_0_14px_#f47b00]" />
+              Votre activité mérite d’être vue
             </div>
-          </div>
-        </div>
-
-        <div className="h-12 bg-linear-to-b from-[#0a0a0a] to-[#fafafa]" />
-      </section>
-
-      {/* SCROLL STORYTELLING */}
-      <section className="py-24 md:py-32 bg-[#fafafa]">
-        <div className="container-bovan">
-          <div className="text-center mb-16">
-            <p className="eyebrow">Trois expériences, une mission</p>
-            <h2 className="heading-2 mt-3">
-              Se montrer.
+            <h1 className="max-w-3xl text-5xl leading-[1.02] font-semibold tracking-[-.055em] sm:text-6xl lg:text-[4.7rem]">
+              Faites découvrir
               <br />
-              Explorer.
+              votre activité
               <br />
-              <span className="text-[#f47b00]">Connecter.</span>
-            </h2>
-            <p className="text-[#525252] mt-4 max-w-xl mx-auto">
-              OCD n&apos;est pas un simple job board. C&apos;est une plateforme où
-              les talents africains se rendent visibles et où les entreprises
-              viennent les chercher.
+              <span className="text-[#ff9a3d]">en direct.</span>
+            </h1>
+            <p className="mt-7 max-w-xl text-base leading-7 text-white/65 sm:text-lg">
+              OCD accompagne les entrepreneurs, commerçants et artisans pour présenter leurs produits et services en live, échanger avec le public et faire grandir leur visibilité.
+            </p>
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <Link href="/contact#reservation" className="inline-flex min-h-13 items-center justify-center gap-2 rounded-full bg-[#f47b00] px-6 py-3.5 font-semibold text-white shadow-[0_12px_34px_-14px_rgba(244,123,0,.9)] transition hover:-translate-y-0.5 hover:bg-[#ff8b17]">
+                Réserver un passage <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link href="#comment-ca-marche" className="inline-flex min-h-13 items-center justify-center gap-2 rounded-full border border-white/20 px-6 py-3.5 font-semibold text-white transition hover:bg-white/10">
+                Découvrir le concept <ArrowDown className="h-4 w-4" />
+              </Link>
+            </div>
+            <p className="mt-6 flex items-start gap-2 text-xs leading-5 text-white/45">
+              <BadgeCheck className="mt-0.5 h-4 w-4 shrink-0 text-[#ff9a3d]" />
+              Les performances dépendent de l’audience réelle, de l’offre et du suivi commercial. OCD ne garantit pas un volume de vues ni de ventes.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-4">
-            {[
-              {
-                n: "01",
-                title: "Se montrer",
-                desc: "Créez votre profil, présentez vos compétences, publiez votre candidature spontanée. Même sans offre, vous devenez visible.",
-                color: "from-[#f47b00] to-[#ff9520]",
-                icon: <Eye className="w-5 h-5" />,
-              },
-              {
-                n: "02",
-                title: "Explorer",
-                desc: "Parcourez l'Afrique, filtrez par pays, compétence, disponibilité. Découvrez des talents que vous n'auriez jamais trouvés.",
-                color: "from-[#0a0a0a] to-[#404040]",
-                icon: <Globe2 className="w-5 h-5" />,
-              },
-              {
-                n: "03",
-                title: "Connecter",
-                desc: "Un message, un appel, une opportunité. Connectez-vous directement avec les talents et les entreprises qui vous correspondent.",
-                color: "from-[#f47b00] to-[#c56200]",
-                icon: <ArrowRight className="w-5 h-5" />,
-              },
-            ].map((s, i) => (
-              <div
-                key={i}
-                className="group relative p-8 rounded-2xl bg-white border border-[#e5e5e5] hover:border-[#0a0a0a] transition hover:shadow-[0_24px_60px_-20px_rgba(0,0,0,0.15)] hover:-translate-y-1"
-              >
-                <div
-                  className={`inline-flex items-center justify-center w-12 h-12 rounded-xl bg-linear-to-br ${s.color} text-white mb-6`}
-                >
-                  {s.icon}
+          <div className="relative mx-auto w-full max-w-[530px] md:ml-auto">
+            <div className="absolute -inset-5 rounded-[2.5rem] bg-[#f47b00]/10 blur-3xl" />
+            <div className="relative rounded-[2rem] border border-white/10 bg-[#24211d] p-3 shadow-[0_40px_100px_-38px_rgba(0,0,0,.9)] sm:p-4">
+              <div className="relative min-h-[430px] overflow-hidden rounded-[1.45rem] bg-[radial-gradient(ellipse_at_70%_10%,rgba(244,123,0,.42),transparent_33%),linear-gradient(145deg,#534335_0%,#312a24_43%,#171512_100%)] p-5 sm:min-h-[490px] sm:p-7">
+                <div className="absolute inset-0 opacity-25" style={{ backgroundImage: "linear-gradient(135deg, transparent 48%, rgba(255,255,255,.13) 49%, transparent 50%)", backgroundSize: "28px 28px" }} />
+                <div className="relative flex items-center justify-between">
+                  <div className="inline-flex items-center gap-2 rounded-full bg-red-500 px-3 py-1.5 text-[10px] font-bold tracking-[.18em] text-white uppercase"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white" /> En direct</div>
+                  <div className="rounded-full border border-white/15 bg-black/25 px-3 py-1.5 text-[10px] tracking-[.13em] text-white/70 uppercase">Aperçu illustratif</div>
                 </div>
-                <div className="text-7xl font-black text-[#f1f1f1] absolute top-4 right-6 select-none">
-                  {s.n}
-                </div>
-                <h3 className="text-xl font-bold mb-2 relative">{s.title}</h3>
-                <p className="text-[#525252] text-sm leading-relaxed relative">
-                  {s.desc}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* AFRICA MAP */}
-      <section className="py-20 md:py-28 bg-white">
-        <div className="container-bovan">
-          <div className="grid lg:grid-cols-[1fr,1.4fr] gap-12 items-center">
-            <div>
-              <p className="eyebrow">Carte interactive</p>
-              <h2 className="heading-2 mt-3">
-                L&apos;Afrique,
-                <br />
-                <span className="text-[#f47b00]">pays par pays.</span>
-              </h2>
-              <p className="text-[#525252] mt-4 leading-relaxed">
-                Survolez chaque pays pour découvrir les talents, les entreprises
-                et les opportunités qui s&apos;y trouvent. Cliquez pour explorer
-                en détail. Les lignes représentent les connexions entre
-                capitales économiques du continent.
-              </p>
-
-              <div className="mt-8 space-y-3">
-                {[
-                  { label: "Pays représentés", value: `${stats.countries}` },
-                  { label: "Talents visibles", value: stats.talents.toLocaleString("fr-FR") },
-                  { label: "Opportunités actives", value: stats.opportunities.toLocaleString("fr-FR") },
-                ].map((s) => (
-                  <div
-                    key={s.label}
-                    className="flex items-center justify-between py-3 border-b border-[#f1f1f1]"
-                  >
-                    <span className="text-sm text-[#525252]">{s.label}</span>
-                    <span className="stat-sm">
-                      {s.value}
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              <Link
-                href="/pays"
-                className="btn-primary mt-8"
-              >
-                Explorer tous les pays
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-
-            <div className="bg-black rounded-3xl p-6 md:p-10 relative overflow-hidden">
-              {/* Flat black ground. An animated aurora mesh used to sit here,
-                  but it washed the map out: the orange country fills lost
-                  contrast against it and the glow fought the lit borders.
-                  The grid is kept very faint (18%) purely to stop the large
-                  black panel reading as a flat void. */}
-              <div className="absolute inset-0 bg-grid-dark opacity-[0.18]" aria-hidden="true" />
-              <div className="relative">
-                <AfricaMapLazy stats={countryStats} />
-              </div>
-              <div className="mt-5 flex flex-wrap items-center justify-between gap-4 text-xs text-white/40 px-2">
-                {/* Matches the data ramp used by AfricaMap exactly. */}
-                <span className="flex items-center gap-2">
-                  Activité
-                  <span className="flex items-center gap-1">
-                    {["#141414", "#7a3900", "#b35400", "#e06a00", "#f47b00"].map(
-                      (c) => (
-                        <span
-                          key={c}
-                          className="w-4 h-3 rounded-sm ring-1 ring-white/15"
-                          style={{ backgroundColor: c }}
-                        />
-                      )
-                    )}
-                  </span>
-                  faible → forte
-                </span>
-                <span>{countryStats.filter((c) => c.talentsCount + c.companiesCount + c.opportunitiesCount > 0).length} pays actifs</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* HOW IT WORKS */}
-      <section className="py-20 md:py-28 bg-[#0a0a0a] text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-grid-dark opacity-30" />
-        <div className="container-bovan relative">
-          <div className="text-center mb-16">
-            <p className="eyebrow text-[#ff9520]">Comment ça marche</p>
-            <h2 className="heading-2 mt-3 text-white">
-              Quatre étapes,
-              <br />
-              <span className="text-[#f47b00]">et c&apos;est parti.</span>
-            </h2>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-            <div>
-              <h3 className="text-2xl font-bold mb-8 flex items-center gap-3">
-                <span className="w-10 h-10 rounded-full bg-[#f47b00] flex items-center justify-center text-white font-black text-sm">
-                  T
-                </span>
-                Pour les talents
-              </h3>
-              <div className="space-y-3">
-                {[
-                  { n: "01", t: "Crée ton profil", d: "Inscris-toi et présente-toi en 2 minutes" },
-                  { n: "02", t: "Montre tes compétences", d: "Ajoute tes skills, expériences et portfolio" },
-                  { n: "03", t: "Rends-toi visible", d: "Publie ta candidature spontanée" },
-                  { n: "04", t: "Reçois des opportunités", d: "Les entreprises viennent te chercher" },
-                ].map((s) => (
-                  <div
-                    key={s.n}
-                    className="flex items-start gap-4 p-5 rounded-xl bg-white/5 border border-white/10 hover:border-[#f47b00]/50 transition-colors"
-                  >
-                    <span className="text-[#f47b00] font-black text-2xl font-mono">
-                      {s.n}
-                    </span>
-                    <div>
-                      <h4 className="font-semibold text-white">{s.t}</h4>
-                      <p className="text-sm text-white/60 mt-1">{s.d}</p>
+                <div className="absolute inset-x-7 top-[20%] flex justify-center">
+                  <div className="relative flex h-[225px] w-[225px] items-center justify-center rounded-full border border-white/15 bg-[radial-gradient(circle_at_50%_42%,rgba(255,221,185,.35),rgba(244,123,0,.18)_43%,rgba(20,17,15,.15)_70%)] shadow-[0_0_70px_rgba(244,123,0,.18)] sm:h-[255px] sm:w-[255px]">
+                    <div className="absolute inset-5 rounded-full border border-dashed border-white/20" />
+                    <div className="relative flex h-[156px] w-[156px] flex-col items-center justify-center rounded-full border border-white/20 bg-[#29211b]/85 text-center shadow-2xl sm:h-[176px] sm:w-[176px]">
+                      <ShoppingBag className="mb-2 h-8 w-8 text-[#ff9a3d]" strokeWidth={1.5} />
+                      <span className="text-[10px] font-bold tracking-[.2em] text-white/55 uppercase">Votre marque</span>
+                      <span className="mt-1 text-lg font-semibold tracking-tight">en lumière</span>
                     </div>
+                    <span className="absolute top-4 right-7 h-2 w-2 rounded-full bg-[#ffb65e] shadow-[0_0_15px_#ffb65e]" />
+                    <span className="absolute bottom-8 left-1 h-1.5 w-1.5 rounded-full bg-white/80" />
                   </div>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-2xl font-bold mb-8 flex items-center gap-3">
-                <span className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#0a0a0a] font-black text-sm">
-                  E
-                </span>
-                Pour les entreprises
-              </h3>
-              <div className="space-y-3">
-                {[
-                  { n: "01", t: "Crée ton entreprise", d: "Inscris-toi et présente ta structure" },
-                  { n: "02", t: "Définis tes besoins", d: "Publie une opportunité ou cherche des talents" },
-                  { n: "03", t: "Trouve des talents", d: "Filtre par compétence, pays, expérience" },
-                  { n: "04", t: "Contacte-les", d: "Un message, c'est le début d'une histoire" },
-                ].map((s) => (
-                  <div
-                    key={s.n}
-                    className="flex items-start gap-4 p-5 rounded-xl bg-white/5 border border-white/10 hover:border-[#f47b00]/50 transition-colors"
-                  >
-                    <span className="text-[#f47b00] font-black text-2xl font-mono">
-                      {s.n}
-                    </span>
-                    <div>
-                      <h4 className="font-semibold text-white">{s.t}</h4>
-                      <p className="text-sm text-white/60 mt-1">{s.d}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* FEATURED TALENTS */}
-      <section className="py-20 md:py-28 bg-[#fafafa]">
-        <div className="container-bovan">
-          <div className="flex items-end justify-between mb-10 gap-4 flex-wrap">
-            <div>
-              <p className="eyebrow">Talents à découvrir</p>
-              <h2 className="heading-2 mt-3">
-                Disponibles.
-                <br />
-                <span className="text-[#f47b00]">Maintenant.</span>
-              </h2>
-            </div>
-            <Link
-              href="/talents"
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-[#0a0a0a] text-sm font-medium hover:bg-[#0a0a0a] hover:text-white transition-colors"
-            >
-              Voir tous les talents
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {talents.map((t) => (
-              <TalentCard key={t.id} talent={t} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* OPPORTUNITIES */}
-      <section className="py-20 md:py-28 bg-white">
-        <div className="container-bovan">
-          <div className="flex items-end justify-between mb-10 gap-4 flex-wrap">
-            <div>
-              <p className="eyebrow">Opportunités</p>
-              <h2 className="heading-2 mt-3">
-                Les postes qui
-                <br />
-                <span className="text-[#f47b00]">vous attendent.</span>
-              </h2>
-            </div>
-            <Link
-              href="/opportunites"
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-[#0a0a0a] text-sm font-medium hover:bg-[#0a0a0a] hover:text-white transition-colors"
-            >
-              Toutes les opportunités
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-4">
-            {opps.map((o) => (
-              <OpportunityCard key={o.id} opportunity={o} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* COMPANIES */}
-      <section className="py-20 md:py-28 bg-[#fafafa]">
-        <div className="container-bovan">
-          <div className="flex items-end justify-between mb-10 gap-4 flex-wrap">
-            <div>
-              <p className="eyebrow">Entreprises</p>
-              <h2 className="heading-2 mt-3">
-                Celles qui recrutent
-                <br />
-                <span className="text-[#f47b00]">aujourd&apos;hui.</span>
-              </h2>
-            </div>
-            <Link
-              href="/entreprises"
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-[#0a0a0a] text-sm font-medium hover:bg-[#0a0a0a] hover:text-white transition-colors"
-            >
-              Toutes les entreprises
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {companiesList.map((c) => (
-              <CompanyCard key={c.id} company={c} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* MARQUEE */}
-      <section className="py-12 bg-[#0a0a0a] overflow-hidden border-y border-white/10">
-        <div className="flex marquee whitespace-nowrap">
-          {Array.from({ length: 2 }).map((_, dup) => (
-            <div key={dup} className="flex items-center gap-12 px-6 shrink-0">
-              {[
-                "Cotonou ●",
-                "Lagos ●",
-                "Accra ●",
-                "Dakar ●",
-                "Abidjan ●",
-                "Douala ●",
-                "Nairobi ●",
-                "Kigali ●",
-                "Kinshasa ●",
-                "Addis Ababa ●",
-                "Cape Town ●",
-                "Maputo ●",
-                "Tunis ●",
-                "Casablanca ●",
-                "Cairo ●",
-              ].map((city, i) => (
-                <span
-                  key={i}
-                  className="stat-sm text-white/30"
-                >
-                  {city}
-                </span>
-              ))}
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* STATS */}
-      <section className="py-20 md:py-28 bg-white">
-        <div className="container-bovan">
-          <div className="text-center mb-12">
-            <p className="eyebrow">OCD en chiffres</p>
-            <h2 className="heading-2 mt-3">
-              Une plateforme,
-              <br />
-              <span className="text-[#f47b00]">un continent.</span>
-            </h2>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { icon: <Users className="w-5 h-5" />, value: stats.talents, label: "Talents inscrits" },
-              { icon: <Building2 className="w-5 h-5" />, value: stats.companies, label: "Entreprises" },
-              { icon: <Briefcase className="w-5 h-5" />, value: stats.opportunities, label: "Opportunités" },
-              { icon: <Globe2 className="w-5 h-5" />, value: stats.countries, label: "Pays" },
-            ].map((s) => (
-              <div
-                key={s.label}
-                className="p-6 md:p-8 rounded-2xl bg-[#fafafa] border border-[#e5e5e5] text-center hover:border-[#f47b00] transition-colors group"
-              >
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#f47b00]/10 text-[#f47b00] mb-4 group-hover:bg-[#f47b00] group-hover:text-white transition-colors">
-                  {s.icon}
                 </div>
-                <div className="stat">
-                  {s.value.toLocaleString("fr-FR")}
+                <div className="absolute right-5 bottom-[104px] flex flex-col gap-3 text-white/80">
+                  <span className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-black/25"><MessageCircle className="h-4 w-4" /></span>
+                  <span className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-black/25"><ShoppingBag className="h-4 w-4" /></span>
                 </div>
-                <div className="text-sm text-[#525252] mt-2">{s.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* TESTIMONIAL / TALENT OF THE WEEK */}
-      {talents[0] && (
-        <section className="py-20 md:py-28 bg-[#0a0a0a] text-white relative overflow-hidden">
-          <div className="absolute inset-0 bg-grid-dark opacity-20" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] glow-orange opacity-20" />
-          <div className="container-bovan relative">
-            <div className="max-w-3xl mx-auto text-center">
-              <div className="inline-flex items-center gap-2 chip-orange bg-white/10 text-[#ffb352] ring-white/20 mb-6">
-                <Award className="w-3.5 h-3.5" />
-                Talent du moment
-              </div>
-              <blockquote className="text-2xl md:text-4xl font-bold leading-tight tracking-tight">
-                « Je n&apos;attends pas qu&apos;une entreprise me trouve. Je rends
-                mon potentiel{" "}
-                <span className="text-[#f47b00]">visible</span>. »
-              </blockquote>
-              <div className="mt-8 flex items-center justify-center gap-4">
-                <div className="w-14 h-14 rounded-full bg-linear-to-br from-[#f47b00] to-[#c56200] flex items-center justify-center text-white font-black text-lg">
-                  {talents[0].firstName?.[0]}
-                  {talents[0].lastName?.[0]}
+                <div className="absolute right-5 bottom-[195px] rounded-xl border border-white/10 bg-black/25 p-3 text-[10px] text-white/75 backdrop-blur-sm">
+                  <div className="mb-1 flex items-center gap-2"><span className="h-5 w-5 rounded-full bg-[#e7a96d]" /><span className="font-medium text-white">Une question ?</span></div>
+                  Comment commander ?
                 </div>
-                <div className="text-left">
-                  <div className="font-semibold">
-                    {talents[0].firstName} {talents[0].lastName}
-                  </div>
-                  <div className="text-sm text-white/60">
-                    {talents[0].headline} · {talents[0].countryFlag}{" "}
-                    {talents[0].countryName}
+                <div className="absolute inset-x-5 bottom-5 rounded-2xl border border-white/10 bg-[#171512]/80 p-4 backdrop-blur-md sm:inset-x-7 sm:bottom-7">
+                  <div className="flex items-center justify-between gap-4">
+                    <div><p className="text-[10px] font-semibold tracking-[.16em] text-[#ffad62] uppercase">La vitrine prend vie</p><p className="mt-1 text-sm font-medium text-white">Présentez. Échangez. Restez joignable.</p></div>
+                    <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#f47b00] text-white"><Video className="h-4 w-4" /></div>
                   </div>
                 </div>
               </div>
             </div>
+            <div className="absolute -bottom-5 -left-4 hidden items-center gap-3 rounded-2xl border border-white/10 bg-[#292520] px-4 py-3 shadow-xl sm:flex">
+              <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#f47b00]/15 text-[#ff9a3d]"><Radio className="h-5 w-5" /></span>
+              <div><p className="text-xs font-semibold text-white">Ensemble, en direct</p><p className="text-[10px] text-white/45">Une expérience à préparer</p></div>
+            </div>
           </div>
-        </section>
-      )}
-
-      {/* CTA */}
-      <section className="py-20 md:py-28 bg-[#f47b00] relative overflow-hidden">
-        <div className="absolute inset-0 bg-grid-dark opacity-10" />
-        <div className="container-bovan relative text-center text-white">
-          <h2 className="heading-2 text-white">
-            Prêt à sortir
-            <br />
-            de la file ?
-          </h2>
-          <p className="mt-4 text-white/80 max-w-xl mx-auto">
-            Rejoignez la première communauté panafricaine de talents et
-            d&apos;entreprises qui croient aux opportunités. S&apos;inscrire est
-            gratuit.
-          </p>
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Link
-              href="/auth/register?role=talent"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#0a0a0a] text-white font-semibold hover:bg-[#262626] transition-colors"
-            >
-              <User className="w-5 h-5" />
-              Je crée mon profil talent
-            </Link>
-            <Link
-              href="/auth/register?role=company"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white text-[#0a0a0a] font-semibold hover:bg-white/90 transition-colors"
-            >
-              <Building2 className="w-5 h-5" />
-              Je recrute sur OCD
-            </Link>
+        </div>
+        <div className="container-bovan relative z-10 pb-9">
+          <div className="flex flex-col justify-between gap-3 border-t border-white/10 pt-5 text-xs text-white/45 sm:flex-row sm:items-center">
+            <span>Un format de promotion pensé pour les entrepreneurs.</span>
+            <span className="flex items-center gap-2"><Users className="h-4 w-4 text-[#f47b00]" /> Audience House of Challenge annoncée : 3 à 4 millions d’abonnés — statistiques et audience active à vérifier.</span>
           </div>
         </div>
       </section>
+
+      <section id="concept" className="container-bovan py-20 md:py-28">
+        <div className="grid gap-10 md:grid-cols-[.8fr_1.2fr] md:items-end">
+          <div><p className="eyebrow">Le concept OCD</p><h2 className="heading-2 mt-3">La visibilité, <span className="text-[#f47b00]">en vrai.</span></h2></div>
+          <p className="max-w-2xl text-base leading-7 text-[#655e56] md:justify-self-end md:text-lg">Votre savoir-faire mérite plus qu’une publication qui défile. OCD vous accompagne dans une présentation commerciale en direct, pour montrer vos produits, répondre aux questions et faciliter la prise de contact avec de nouveaux clients.</p>
+        </div>
+        <div className="mt-12 grid gap-4 sm:grid-cols-3">
+          {[{ n: "01", title: "Montrer", text: "Mettez des visages, des détails et une histoire derrière votre offre." }, { n: "02", title: "Échanger", text: "Répondez aux questions du public pendant la présentation." }, { n: "03", title: "Convertir", text: "Poursuivez la conversation après le direct et suivez vos prospects." }].map((item) => <div key={item.n} className="rounded-2xl border border-[#e9e3dc] bg-white p-6"><span className="text-xs font-bold tracking-[.18em] text-[#f47b00]">{item.n}</span><h3 className="mt-4 text-xl font-semibold tracking-tight">{item.title}</h3><p className="mt-2 text-sm leading-6 text-[#716a62]">{item.text}</p></div>)}
+        </div>
+      </section>
+
+      <section id="comment-ca-marche" className="bg-[#f1ece5] py-20 md:py-28">
+        <div className="container-bovan">
+          <div className="max-w-2xl"><p className="eyebrow">Simple, de la réservation au suivi</p><h2 className="heading-2 mt-3">Comment ça <span className="text-[#f47b00]">marche ?</span></h2><p className="mt-4 leading-7 text-[#655e56]">Une équipe vous accompagne à chaque étape. Vous restez au cœur de la présentation : personne ne connaît votre activité mieux que vous.</p></div>
+          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{steps.map((step) => <article key={step.number} className="relative rounded-2xl bg-white p-6 shadow-[0_14px_50px_-42px_rgba(55,39,25,.5)]"><span className="text-xs font-bold tracking-[.18em] text-[#f47b00]">ÉTAPE {step.number}</span><h3 className="mt-5 text-lg font-semibold">{step.title}</h3><p className="mt-2 text-sm leading-6 text-[#716a62]">{step.text}</p></article>)}</div>
+        </div>
+      </section>
+
+      <section id="services" className="container-bovan py-20 md:py-28">
+        <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end"><div><p className="eyebrow">Un accompagnement complet</p><h2 className="heading-2 mt-3">Plus qu’un <span className="text-[#f47b00]">direct.</span></h2></div><p className="max-w-md text-sm leading-6 text-[#716a62]">Composez une présence cohérente autour de votre passage. Les prestations incluses varient selon la formule et restent à confirmer lors de la réservation.</p></div>
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{services.map((service) => <article key={service.title} className="rounded-2xl border border-[#e9e3dc] bg-white p-6 transition hover:-translate-y-1 hover:border-[#f47b00]/40 hover:shadow-lg"><span className="grid h-11 w-11 place-items-center rounded-xl bg-[#fff1e2] text-[#e46c00]"><service.icon className="h-5 w-5" /></span><h3 className="mt-5 font-semibold">{service.title}</h3><p className="mt-2 text-sm leading-6 text-[#716a62]">{service.text}</p></article>)}</div>
+      </section>
+
+      <section id="public-cible" className="bg-[#171512] py-20 text-white md:py-24">
+        <div className="container-bovan grid gap-10 md:grid-cols-[.85fr_1.15fr] md:items-center">
+          <div><p className="eyebrow text-[#ff9a3d]">Pour qui ?</p><h2 className="heading-2 mt-3 text-white">Les activités <span className="text-[#ff9a3d]">qui font vivre nos villes.</span></h2><p className="mt-4 max-w-md leading-7 text-white/60">Du commerce de proximité aux marques en croissance, OCD ouvre un espace de présentation à celles et ceux qui ont quelque chose à proposer.</p></div>
+          <div className="grid grid-cols-2 gap-3">{audiences.map((audience) => <div key={audience} className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[.04] p-3 text-sm text-white/80 sm:p-4"><Check className="h-4 w-4 shrink-0 text-[#ff9a3d]" />{audience}</div>)}</div>
+        </div>
+      </section>
+
+      <section id="tarifs" className="container-bovan py-20 md:py-28">
+        <div className="mx-auto max-w-2xl text-center"><p className="eyebrow">Des formules accessibles</p><h2 className="heading-2 mt-3">Votre prochain passage <span className="text-[#f47b00]">commence ici.</span></h2><p className="mt-4 text-sm leading-6 text-[#716a62]">Tarifs communiqués dans la présentation initiale. Ils sont indicatifs et doivent être confirmés par OCD avant toute réservation.</p></div>
+        <div className="mt-10 grid items-stretch gap-4 lg:grid-cols-3">{packages.map((pack) => <article key={pack.name} className={`relative flex flex-col rounded-3xl border p-6 sm:p-7 ${pack.featured ? "border-[#f47b00] bg-[#fff7ee] shadow-[0_24px_70px_-44px_rgba(198,87,0,.65)]" : "border-[#e9e3dc] bg-white"}`}>
+          {pack.featured && <span className="absolute -top-3 left-6 rounded-full bg-[#f47b00] px-3 py-1 text-[10px] font-bold tracking-[.12em] text-white uppercase">Formule populaire</span>}
+          <p className="text-sm font-semibold text-[#716a62]">{pack.name}</p><p className="mt-2 text-3xl font-semibold tracking-[-.04em]">{pack.duration}</p><p className="mt-5 flex items-baseline gap-1"><span className="text-4xl font-semibold tracking-[-.05em]">{pack.price}</span><span className="text-sm text-[#716a62]">FCFA</span></p><p className="mt-3 min-h-12 text-sm leading-6 text-[#716a62]">{pack.description}</p><div className="my-5 h-px bg-[#e9e3dc]"/><ul className="mb-7 space-y-3">{pack.points.map((point) => <li key={point} className="flex gap-2 text-sm text-[#49433d]"><Check className="mt-0.5 h-4 w-4 shrink-0 text-[#e46c00]" />{point}</li>)}</ul><Link href={`/contact?formule=${encodeURIComponent(pack.name)}#reservation`} className={`mt-auto inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition ${pack.featured ? "bg-[#f47b00] text-white hover:bg-[#c56200]" : "border border-[#d9d0c6] text-[#29231d] hover:border-[#f47b00] hover:text-[#c56200]"}`}>Demander cette formule <ArrowRight className="h-4 w-4" /></Link>
+        </article>)}</div>
+        <p className="mt-5 text-center text-xs leading-5 text-[#81796f]">La disponibilité, les prestations exactes et les conditions de réservation sont à confirmer avec l’équipe OCD. La visibilité ne constitue pas une garantie de vente.</p>
+      </section>
+
+      <section className="container-bovan pb-20 md:pb-28">
+        <div className="relative overflow-hidden rounded-[2rem] bg-[#e86f00] px-6 py-12 text-white sm:px-10 md:px-14 md:py-16">
+          <div aria-hidden="true" className="absolute -top-32 -right-20 h-80 w-80 rounded-full border border-white/20"/><div aria-hidden="true" className="absolute -top-20 -right-8 h-56 w-56 rounded-full border border-white/20"/>
+          <div className="relative z-10 flex flex-col gap-8 md:flex-row md:items-end md:justify-between"><div className="max-w-2xl"><p className="text-xs font-bold tracking-[.18em] text-white/75 uppercase">À votre tour</p><h2 className="mt-3 text-3xl leading-tight font-semibold tracking-[-.04em] sm:text-4xl">Votre activité a une histoire.<br className="hidden sm:block"/> Faisons-la découvrir.</h2><p className="mt-4 max-w-lg text-sm leading-6 text-white/85">Parlez-nous de votre activité et de la formule qui vous intéresse. Nous confirmerons ensemble les disponibilités et les modalités.</p></div><Link href="/contact#reservation" className="inline-flex min-h-13 shrink-0 items-center justify-center gap-2 rounded-full bg-white px-6 py-3.5 font-semibold text-[#b74f00] transition hover:-translate-y-0.5 hover:bg-[#fff4e9]">Parler à OCD <ArrowRight className="h-4 w-4" /></Link></div>
+        </div>
+      </section>
+      <section className="container-bovan pb-16"><details className="group mx-auto max-w-3xl rounded-2xl border border-[#e9e3dc] bg-white p-5"><summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold">Qu’est-ce qui est inclus dans chaque formule ?<ChevronDown className="h-4 w-4 shrink-0 transition group-open:rotate-180"/></summary><p className="mt-4 text-sm leading-6 text-[#716a62]">Les informations présentées ici reprennent les formats et tarifs annoncés initialement. Le détail des prestations (affiche, stories, décor, régie, durée et créneau) doit être confirmé par OCD au moment de la réservation.</p></details></section>
     </div>
   );
 }
