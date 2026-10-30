@@ -52,8 +52,8 @@
   --color-gray-800: #262626;
   --color-gray-900: #171717;
 
-  --font-sans: var(--font-inter), "Inter", "system-ui", sans-serif;
-  --font-display: var(--font-inter), "Inter", "system-ui", sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", Menlo, monospace;
 
   --shadow-bovan: 0 24px 60px -10px rgba(244, 123, 0, 0.25);
@@ -619,12 +619,30 @@
 }
 
 /* ============================================================
-   SECTION A — HERO "forge / braises"
-   The panning grid, drifting glows and rising embers used to be
-   infinite animations here. They were removed to keep the background
-   static: four simultaneous loops behind the headline competed with
-   the slogan reveal and repainted every frame. The keyframes that
-   drove them were removed with their last usage.
+   OCD — social commerce landing page
+   ============================================================ */
+.ocd-hero {
+  background-image:
+    radial-gradient(ellipse at 80% 12%, rgba(244, 123, 0, 0.09), transparent 42%),
+    linear-gradient(115deg, #171512 0%, #1d1915 56%, #211a14 100%);
+}
+.ocd-hero-glow {
+  position: absolute;
+  top: 9%;
+  right: -12rem;
+  width: min(56vw, 48rem);
+  aspect-ratio: 1;
+  border: 1px solid rgba(244, 123, 0, 0.1);
+  border-radius: 9999px;
+  box-shadow: 0 0 0 3rem rgba(244, 123, 0, 0.025), 0 0 0 7rem rgba(244, 123, 0, 0.018);
+  pointer-events: none;
+}
+@media (max-width: 640px) {
+  .ocd-hero-glow { top: 42%; right: -16rem; width: 34rem; }
+}
+
+/* ============================================================
+   SECTION A — former animated hero
    ============================================================ */
 
 /* ============================================================
