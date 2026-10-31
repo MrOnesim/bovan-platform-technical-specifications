@@ -1,17 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { navigateAfterAuthChange } from "@/lib/utils";
 import { ArrowRight, Mail, Lock, Eye, EyeOff } from "lucide-react";
-
-/* Seeded accounts from src/db/seed.ts, all sharing the same password. */
-const DEMO_PASSWORD = "password123";
-const DEMO_ACCOUNTS = [
-  { role: "Talent", email: "graca.onesim@bovan.dev", initials: "GO" },
-  { role: "Entreprise", email: "hr@wave-senegal.com", initials: "WS" },
-] as const;
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -52,13 +44,6 @@ export default function LoginPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     await signIn(email, password);
-  }
-
-  /** Pre-fills the form so the credentials are visible/editable, then logs in. */
-  async function handleDemoClick(demoEmail: string) {
-    setEmail(demoEmail);
-    setPassword(DEMO_PASSWORD);
-    await signIn(demoEmail, DEMO_PASSWORD);
   }
 
   return (
@@ -127,51 +112,6 @@ export default function LoginPage() {
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
-
-          <p className="text-sm text-[#525252] mt-6 text-center">
-            Pas encore de compte ?{" "}
-            <Link href="/auth/register" className="text-[#f47b00] font-semibold">
-              S&apos;inscrire
-            </Link>
-          </p>
-
-          <div className="mt-8 p-4 rounded-xl bg-[#f47b00]/5 border border-[#f47b00]/20 text-sm">
-            <p className="font-semibold text-[#c56200] mb-1">Comptes de démo</p>
-            <p className="text-xs text-[#525252] mb-3">
-              Cliquez pour vous connecter immédiatement avec un compte pré-rempli.
-            </p>
-            <div className="space-y-2">
-              {DEMO_ACCOUNTS.map((account) => (
-                <button
-                  key={account.email}
-                  type="button"
-                  disabled={loading}
-                  onClick={() => handleDemoClick(account.email)}
-                  className="w-full flex items-center gap-3 p-2.5 rounded-lg bg-white border border-[#e5e5e5] text-left hover:border-[#f47b00] hover:bg-[#f47b00]/5 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-                >
-                  <span
-                    aria-hidden="true"
-                    className="w-9 h-9 shrink-0 rounded-full bg-[#0a0a0a] text-white text-xs font-bold flex items-center justify-center"
-                  >
-                    {account.initials}
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block text-xs font-semibold text-[#0a0a0a]">
-                      {account.role}
-                    </span>
-                    <span className="block text-xs font-mono text-[#737373] truncate">
-                      {account.email}
-                    </span>
-                  </span>
-                  <ArrowRight aria-hidden="true" className="w-4 h-4 shrink-0 text-[#f47b00]" />
-                </button>
-              ))}
-            </div>
-            <p className="text-xs text-[#525252] mt-3">
-              Mot de passe commun:{" "}
-              <span className="font-mono">{DEMO_PASSWORD}</span>
-            </p>
-          </div>
         </div>
       </div>
 
@@ -186,23 +126,8 @@ export default function LoginPage() {
             <span className="text-[#f47b00]">c&apos;est dehors.</span>
           </h2>
           <p className="mt-6 text-white/60 max-w-md leading-relaxed">
-            Connectez-vous pour retrouver vos talents favoris, gérer vos
-            candidatures et publier vos prochaines opportunités.
+            Connectez-vous à l&apos;espace OCD.
           </p>
-          <div className="mt-12 flex items-center gap-8 text-sm text-white/40">
-            <div>
-              <div className="stat-sm text-white">52</div>
-              <div>Pays</div>
-            </div>
-            <div>
-              <div className="stat-sm text-white">21k+</div>
-              <div>Talents</div>
-            </div>
-            <div>
-              <div className="stat-sm text-white">3k+</div>
-              <div>Entreprises</div>
-            </div>
-          </div>
         </div>
       </div>
     </div>

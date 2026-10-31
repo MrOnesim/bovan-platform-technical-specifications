@@ -34,7 +34,7 @@ export default function AboutPage() {
       <section className="container-bovan py-16 md:py-20">
         <div className="grid gap-12 md:grid-cols-[.78fr_1.22fr]">
           <div><p className="eyebrow">Notre ambition</p><h2 className="heading-2 mt-3">Transformer la visibilité en <span className="text-[#f47b00]">rencontres utiles.</span></h2></div>
-          <div className="space-y-4 text-base leading-7 text-[#655e56]"><p>Nous voulons donner aux professionnels un espace pour raconter ce qu’ils font, montrer leurs produits et échanger directement avec des consommateurs potentiellement intéressés.</p><p>Un live peut susciter l’attention et ouvrir une conversation. Les résultats commerciaux dépendent ensuite de plusieurs facteurs : l’audience réellement présente, l’offre, le prix, la disponibilité des produits et le suivi des demandes.</p><p className="rounded-2xl border border-[#f2d7bb] bg-[#fff5e9] p-5 text-sm leading-6 text-[#6c4a2c]">L’audience de 3 à 4 millions d’abonnés associée au compte House of Challenge est une donnée annoncée dans la présentation initiale. Elle doit être vérifiée et ne représente pas le nombre de spectateurs garantis par live.</p></div>
+          <div className="space-y-4 text-base leading-7 text-[#655e56]"><p>Nous voulons donner aux professionnels un espace pour raconter ce qu’ils font, montrer leurs produits et échanger directement avec des consommateurs potentiellement intéressés.</p><p>Un live peut susciter l’attention et ouvrir une conversation. Les résultats commerciaux dépendent ensuite de plusieurs facteurs : l’audience réellement présente, l’offre, le prix, la disponibilité des produits et le suivi des demandes.</p></div>
         </div>
       </section>
 

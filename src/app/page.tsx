@@ -12,9 +12,9 @@ import {
   Palette,
   Radio,
   Sparkles,
-  Users,
   Video,
 } from "lucide-react";
+import { AfricaMap3D } from "@/components/AfricaMap3D";
 
 const steps = [
   { number: "01", title: "Vous réservez", text: "Choisissez une formule et échangez avec l’équipe OCD pour définir le créneau et les besoins de votre activité." },
@@ -118,7 +118,6 @@ export default function HomePage() {
         <div className="container-bovan relative z-10 pb-9">
           <div className="flex flex-col justify-between gap-3 border-t border-white/10 pt-5 text-xs text-white/45 sm:flex-row sm:items-center">
             <span>Un format de promotion pensé pour les entrepreneurs.</span>
-            <span className="flex items-center gap-2"><Users className="h-4 w-4 text-[#f47b00]" /> Audience House of Challenge annoncée : 3 à 4 millions d’abonnés — statistiques et audience active à vérifier.</span>
           </div>
         </div>
       </section>
@@ -149,6 +148,12 @@ export default function HomePage() {
         <div className="container-bovan grid gap-10 md:grid-cols-[.85fr_1.15fr] md:items-center">
           <div><p className="eyebrow text-[#ff9a3d]">Pour qui ?</p><h2 className="heading-2 mt-3 text-white">Les activités <span className="text-[#ff9a3d]">qui font vivre nos villes.</span></h2><p className="mt-4 max-w-md leading-7 text-white/60">Du commerce de proximité aux marques en croissance, OCD ouvre un espace de présentation à celles et ceux qui ont quelque chose à proposer.</p></div>
           <div className="grid grid-cols-2 gap-3">{audiences.map((audience) => <div key={audience} className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[.04] p-3 text-sm text-white/80 sm:p-4"><Check className="h-4 w-4 shrink-0 text-[#ff9a3d]" />{audience}</div>)}</div>
+        </div>
+      </section>
+
+      <section id="presence" className="bg-[#f1ece5] py-20 md:py-28">
+        <div className="container-bovan">
+          <AfricaMap3D />
         </div>
       </section>
 
