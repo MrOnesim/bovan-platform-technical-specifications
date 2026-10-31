@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, CalendarDays, CircleHelp, Mail, MessageCircle } from "lucide-react";
+import { ArrowLeft, ArrowRight, CalendarDays, CircleHelp, Mail, MessageCircle, Phone } from "lucide-react";
 import { OcdInquiryForm } from "@/components/OcdInquiryForm";
 
 export const metadata = {
@@ -26,11 +26,74 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
         </div>
       </section>
       <section id="reservation" className="container-bovan grid gap-8 py-12 md:grid-cols-[1.15fr_.85fr] md:py-16">
-        <OcdInquiryForm initialPackage={initialPackage} contactEmail={process.env.NEXT_PUBLIC_OCD_CONTACT_EMAIL ?? ""} />
+        <OcdInquiryForm initialPackage={initialPackage} contactEmail={process.env.NEXT_PUBLIC_OCD_CONTACT_EMAIL || "contact@houseofchallenge.org"} />
         <aside className="space-y-4">
           <div className="rounded-2xl border border-[#e9e3dc] bg-white p-6"><span className="grid h-11 w-11 place-items-center rounded-xl bg-[#fff1e2] text-[#df6800]"><CalendarDays className="h-5 w-5" /></span><h2 className="mt-4 font-semibold">Comment se passe la réservation ?</h2><p className="mt-2 text-sm leading-6 text-[#716a62]">Après votre demande, précisez avec OCD le créneau souhaité, les produits à présenter, les besoins techniques et le détail des prestations.</p></div>
           <div className="rounded-2xl border border-[#e9e3dc] bg-white p-6"><span className="grid h-11 w-11 place-items-center rounded-xl bg-[#fff1e2] text-[#df6800]"><CircleHelp className="h-5 w-5" /></span><h2 className="mt-4 font-semibold">Les tarifs sont-ils définitifs ?</h2><p className="mt-2 text-sm leading-6 text-[#716a62]">Non. Les prix présentés sur le site sont ceux annoncés dans la présentation initiale et restent à confirmer avant toute réservation.</p></div>
-          <div className="rounded-2xl bg-[#f1ece5] p-6"><h2 className="font-semibold">Une question avant de réserver ?</h2><p className="mt-2 text-sm leading-6 text-[#716a62]">Utilisez le formulaire pour décrire votre besoin. Les coordonnées directes d’OCD seront ajoutées dès qu’elles auront été confirmées.</p><div className="mt-4 flex items-center gap-2 text-xs text-[#82796f]"><MessageCircle className="h-4 w-4"/><span>Pas de numéro ou de réseau social communiqué pour le moment.</span></div></div>
+          <div className="rounded-2xl bg-[#f1ece5] p-6">
+            <h2 className="font-semibold">Contacter l’équipe</h2>
+            <p className="mt-2 text-sm leading-6 text-[#716a62]">
+              <strong className="text-[#24211e]">House of Challenge</strong>
+              <br />
+              OCD — Opportunité C&apos;est Dehors
+            </p>
+            <div className="mt-4 space-y-3 text-sm">
+              <a
+                href="mailto:contact@houseofchallenge.org"
+                className="flex items-center gap-2 text-[#b85100] hover:underline"
+              >
+                <Mail className="h-4 w-4 shrink-0" />
+                contact@houseofchallenge.org
+              </a>
+              <a
+                href="tel:+22879790229"
+                className="flex items-center gap-2 text-[#b85100] hover:underline"
+              >
+                <Phone className="h-4 w-4 shrink-0" />
+                +228 79 79 02 29
+              </a>
+              <a
+                href="https://houseofchallenge.org/fr"
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-2 text-[#b85100] hover:underline"
+              >
+                <MessageCircle className="h-4 w-4 shrink-0" />
+                houseofchallenge.org
+              </a>
+              <a
+                href="https://www.facebook.com/profile.php?id=61587685112077"
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-2 text-[#b85100] hover:underline"
+              >
+                <MessageCircle className="h-4 w-4 shrink-0" />
+                Facebook
+              </a>
+            </div>
+            <div className="mt-5 border-t border-[#ded6cc] pt-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-[#82796f]">
+                Bovann Group
+              </p>
+              <a
+                href="mailto:contact@bovanngroup.com"
+                className="mt-2 flex items-center gap-2 text-sm text-[#b85100] hover:underline"
+              >
+                <Mail className="h-4 w-4 shrink-0" />
+                contact@bovanngroup.com
+              </a>
+              <a
+                href="tel:+2250586868619"
+                className="mt-3 flex items-center gap-2 text-sm text-[#b85100] hover:underline"
+              >
+                <Phone className="h-4 w-4 shrink-0" />
+                +225 05868 68619
+              </a>
+              <p className="mt-4 text-xs leading-5 text-[#716a62]">
+                Bovann · Panafricain dans l&apos;âme et président des OCD.
+              </p>
+            </div>
+          </div>
           <Link href="/#tarifs" className="inline-flex items-center gap-2 px-1 py-2 text-sm font-semibold text-[#b85100] hover:underline">Revoir les formules <ArrowRight className="h-4 w-4"/></Link>
         </aside>
       </section>

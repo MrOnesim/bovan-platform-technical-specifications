@@ -9,10 +9,12 @@ import {
   applications,
   countries,
   reviews,
+  inquiries,
 } from "@/db/schema";
-import { sql, desc, eq, and } from "drizzle-orm";
-import { Users, Building2, Briefcase, Send, Globe2, TrendingUp, Star, Check, X } from "lucide-react";
-import { ReviewModerationButtons } from "@/components/ReviewModerationButtons";
+import { sql, desc, eq } from "drizzle-orm";
+import { Users, Building2, Briefcase, Send, Globe2, TrendingUp, Star, Inbox } from "lucide-react";
+import { InquiryStatusForm } from "@/components/InquiryStatusForm";
+
 
 export const dynamic = "force-dynamic";
 
@@ -49,24 +51,21 @@ export default async function AdminPage() {
     )`))
     .limit(10);
 
-  const pendingReviews = await db
+  const recentInquiries = await db
     .select({
-      id: reviews.id,
-      rating: reviews.rating,
-      comment: reviews.comment,
-      targetType: reviews.targetType,
-      targetId: reviews.targetId,
-      createdAt: reviews.createdAt,
-      authorFirstName: users.firstName,
-      authorLastName: users.lastName,
-      authorEmail: users.email,
-      authorRole: users.role,
+      id: inquiries.id,
+      name: inquiries.name,
+      business: inquiries.business,
+      email: inquiries.email,
+      phone: inquiries.phone,
+      packageLabel: inquiries.packageLabel,
+      message: inquiries.message,
+      status: inquiries.status,
+      createdAt: inquiries.createdAt,
     })
-    .from(reviews)
-    .innerJoin(users, eq(users.id, reviews.authorId))
-    .where(eq(reviews.status, "PENDING"))
-    .orderBy(desc(reviews.createdAt))
-    .limit(20);
+    .from(inquiries)
+    .orderBy(desc(inquiries.createdAt))
+    .limit(30);
 
   return (
     <div className="bg-[#fafafa] min-h-screen">
@@ -104,6 +103,66 @@ export default async function AdminPage() {
 
         <div className="mt-8 bg-white rounded-2xl p-6 border border-[#e5e5e5]">
           <h2 className="font-bold text-lg mb-4 flex items-center gap-2">
+            <Inbox aria-hidden="true" className="w-5 h-5 text-[#f47b00]" />
+            Demandes de réservation
+            <span className="text-sm font-normal text-[#737373]">
+              ({recentInquiries.length} récente{recentInquiries.length > 1 ? "s" : ""})
+            </span>
+          </h2>
+          {recentInquiries.length === 0 ? (
+            <p className="text-sm text-[#737373]">
+              Aucune demande enregistrée pour le moment.
+            </p>
+          ) : (
+            <ul className="space-y-4">
+              {recentInquiries.map((inquiry) => (
+                <li
+                  key={inquiry.id}
+                  className="rounded-xl border border-[#f1f1f1] p-4"
+                >
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <h3 className="font-semibold">{inquiry.name}</h3>
+                      <p className="text-sm text-[#525252]">{inquiry.business}</p>
+                      <p className="mt-1 text-xs text-[#737373]">
+                        {new Date(inquiry.createdAt).toLocaleString("fr-FR")}
+                      </p>
+                      <div className="mt-2">
+                        <InquiryStatusForm id={inquiry.id} status={inquiry.status} />
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm">
+                      <a
+                        href={`mailto:${inquiry.email}`}
+                        className="font-medium text-[#b85100] hover:underline"
+                      >
+                        {inquiry.email}
+                      </a>
+                      {inquiry.phone && (
+                        <a
+                          href={`tel:${inquiry.phone}`}
+                          className="text-[#b85100] hover:underline"
+                        >
+                          {inquiry.phone}
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                  <p className="mt-3 text-sm text-[#525252]">
+                    <span className="font-medium">Formule : </span>
+                    {inquiry.packageLabel || "À discuter"}
+                  </p>
+                  <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-6 text-[#525252]">
+                    {inquiry.message}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        <div className="mt-8 bg-white rounded-2xl p-6 border border-[#e5e5e5]">
+          <h2 className="font-bold text-lg mb-4 flex items-center gap-2">
             <TrendingUp aria-hidden="true" className="w-5 h-5 text-[#f47b00]" />
             Top pays
           </h2>
@@ -133,67 +192,7 @@ export default async function AdminPage() {
           </table>
         </div>
 
-        <div className="mt-8 bg-white rounded-2xl p-6 border border-[#e5e5e5]">
-          <h2 className="font-bold text-lg mb-4 flex items-center gap-2">
-            <Star aria-hidden="true" className="w-5 h-5 text-[#f47b00]" />
-            Modération des avis
-            <span className="text-sm font-normal text-[#737373]">
-              ({pendingReviews.length} en attente)
-            </span>
-          </h2>
-          {pendingReviews.length === 0 ? (
-            <p className="text-sm text-[#737373]">
-              Aucun avis en attente de validation.
-            </p>
-          ) : (
-            <ul className="space-y-4">
-              {pendingReviews.map((r) => (
-                <li
-                  key={r.id}
-                  className="border border-[#f1f1f1] rounded-xl p-4 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3"
-                >
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-medium text-sm">
-                        {r.authorFirstName || ""} {r.authorLastName || ""}
-                      </span>
-                      <span className="chip text-xs">
-                        {r.authorRole === "COMPANY" ? "Entreprise" : "Talent"}
-                      </span>
-                      <span className="chip text-xs">
-                        Avis sur {r.targetType === "TALENT" ? "un talent" : "une entreprise"}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1 mt-2">
-                      {[1, 2, 3, 4, 5].map((i) => (
-                        <Star
-                          key={i}
-                          aria-hidden="true"
-                          className={`w-4 h-4 ${
-                            i <= r.rating
-                              ? "text-[#f47b00] fill-[#f47b00]"
-                              : "text-[#d4d4d4]"
-                          }`}
-                        />
-                      ))}
-                      <span className="sr-only">Note : {r.rating} sur 5</span>
-                    </div>
-                    {r.comment && (
-                      <p className="text-sm text-[#525252] mt-2 whitespace-pre-line">
-                        {r.comment}
-                      </p>
-                    )}
-                    <p className="text-xs text-[#737373] mt-2">
-                      {new Date(r.createdAt).toLocaleDateString("fr-FR")} ·{" "}
-                      {r.authorEmail}
-                    </p>
-                  </div>
-                  <ReviewModerationButtons reviewId={r.id} />
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+
       </div>
     </div>
   );

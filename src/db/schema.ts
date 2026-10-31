@@ -126,6 +126,11 @@ export const skillCategoryEnum = pgEnum("skill_category", [
   "CREATIVE",
   "OTHER",
 ]);
+export const inquiryStatusEnum = pgEnum("inquiry_status", [
+  "NEW",
+  "CONTACTED",
+  "CLOSED",
+]);
 export const reviewTargetEnum = pgEnum("review_target", ["TALENT", "COMPANY"]);
 export const reviewStatusEnum = pgEnum("review_status", [
   "PENDING",
@@ -548,6 +553,38 @@ export const reports = pgTable("reports", {
   resolvedAt: timestamp("resolved_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
+
+// ============================================================
+// Inquiries (demandes de réservation envoyées depuis le site OCD)
+// ============================================================
+
+export const inquiries = pgTable(
+  "inquiries",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    name: text("name").notNull(),
+    business: text("business").notNull(),
+    email: text("email").notNull(),
+    phone: text("phone"),
+    // Libellé de la formule telle qu'affichée sur le site, jamais un id :
+    // les tarifs restent indicatifs et peuvent changer sans migration.
+    packageLabel: text("package_label"),
+    message: text("message").notNull(),
+    source: text("source").default("site").notNull(),
+    status: inquiryStatusEnum("status").default("NEW").notNull(),
+    // Adresse IP hachée (jamais en clair) : sert au diagnostic anti-abus.
+    ipHash: text("ip_hash"),
+    userAgent: text("user_agent"),
+    emailSentAt: timestamp("email_sent_at"),
+    emailError: text("email_error"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (t) => ({
+    createdIdx: index("inquiries_created_idx").on(t.createdAt),
+    statusIdx: index("inquiries_status_idx").on(t.status),
+    emailIdx: index("inquiries_email_idx").on(t.email),
+  })
+);
 
 // ============================================================
 // Reviews (avis liés à une interaction réelle, validés par un admin)

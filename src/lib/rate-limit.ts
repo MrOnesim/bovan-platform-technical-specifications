@@ -17,7 +17,7 @@ const store = new Map<string, Bucket>();
 // Bound the memory the Map can consume; entries are evicted on sweep.
 const MAX_KEYS = 20_000;
 
-function keyFor(scope: "ip" | "account", value: string) {
+function keyFor(scope: string, value: string) {
   return `${scope}:${createHash("sha256").update(value).digest("hex").slice(0, 32)}`;
 }
 
@@ -116,6 +116,67 @@ export function burnVerificationTime() {
     p: 1,
   });
   timingSafeEqual(k, throwaway);
+}
+
+/* ---------------------------------------------------- form submissions
+   Separate buckets from login on purpose: a burst of booking requests must
+   never lock the login form, and a locked login must never block a customer
+   trying to reach OCD. */
+
+const SUBMIT_WINDOW_MS = 60 * 60 * 1000; // one hour
+const SUBMIT_PER_IP = 5;
+const SUBMIT_PER_EMAIL = 3;
+
+const submissions = new Map<string, number[]>();
+
+function prune(hits: number[] | undefined, now: number): number[] {
+  if (!hits) return [];
+  return hits.filter((t) => now - t < SUBMIT_WINDOW_MS);
+}
+
+function sweepSubmissions(now: number) {
+  for (const [k, hits] of submissions) {
+    if (prune(hits, now).length === 0) submissions.delete(k);
+  }
+}
+
+/**
+ * Checks and consumes one submission slot in a single call, so a rejected
+ * request never counts against the caller.
+ */
+export function consumeSubmission(ip: string, email: string) {
+  const now = Date.now();
+  const ipKey = keyFor("submit-ip", ip);
+  const emailKey = keyFor("submit-email", `${email.toLowerCase()}|${ip}`);
+
+  const ipHits = prune(submissions.get(ipKey), now);
+  const emailHits = prune(submissions.get(emailKey), now);
+
+  const ipBlocked = ipHits.length >= SUBMIT_PER_IP;
+  const emailBlocked = emailHits.length >= SUBMIT_PER_EMAIL;
+
+  if (ipBlocked || emailBlocked) {
+    const oldest = ipBlocked ? ipHits[0] : emailHits[0];
+    const retryAfter = Math.max(
+      1,
+      Math.ceil((oldest + SUBMIT_WINDOW_MS - now) / 1000)
+    );
+    return { allowed: false as const, retryAfter };
+  }
+
+  ipHits.push(now);
+  emailHits.push(now);
+  submissions.set(ipKey, ipHits);
+  submissions.set(emailKey, emailHits);
+
+  if (submissions.size > MAX_KEYS) sweepSubmissions(now);
+
+  return { allowed: true as const, retryAfter: 0 };
+}
+
+/** Test helper, mirrors resetThrottle(). */
+export function resetSubmissions() {
+  submissions.clear();
 }
 
 /** Client IP from the usual proxy headers. */

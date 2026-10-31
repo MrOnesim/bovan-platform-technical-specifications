@@ -38,11 +38,7 @@ export default function LoginPage() {
       // session and is preserved across a push, so the Navbar would keep
       // showing the logged-out state.
       navigateAfterAuthChange(
-        data.user?.role === "COMPANY"
-          ? "/company/dashboard"
-          : data.user?.role === "ADMIN"
-            ? "/admin"
-            : "/dashboard"
+        data.user?.role === "ADMIN" ? "/admin" : "/"
       );
       return true;
     } catch {

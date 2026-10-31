@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import {
   ArrowDown,
   ArrowRight,
@@ -10,7 +11,6 @@ import {
   Megaphone,
   Palette,
   Radio,
-  ShoppingBag,
   Sparkles,
   Users,
   Video,
@@ -45,20 +45,20 @@ export default function HomePage() {
     <div className="overflow-hidden bg-[#fbf9f6] text-[#1d1a17]">
       <section className="ocd-hero relative isolate bg-[#171512] text-white">
         <div aria-hidden="true" className="ocd-hero-glow" />
-        <div className="container-bovan relative z-10 grid min-h-[680px] items-center gap-12 py-16 md:min-h-[740px] md:grid-cols-[1.02fr_.98fr] md:py-24">
+        <div className="container-bovan relative z-10 grid min-h-[680px] items-center gap-12 py-14 sm:py-16 md:min-h-[740px] md:grid-cols-[1.02fr_.98fr] md:py-20 lg:gap-16">
           <div className="max-w-2xl">
-            <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-3.5 py-2 text-xs font-semibold tracking-[.12em] text-white/75 uppercase">
-              <span className="h-2 w-2 rounded-full bg-[#f47b00] shadow-[0_0_14px_#f47b00]" />
+            <div className="mb-7 inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.06] px-3.5 py-2 text-[11px] font-semibold tracking-[.12em] text-white/75 uppercase">
+              <span className="h-2 w-2 rounded-full bg-[#ff9a3d] shadow-[0_0_14px_#f47b00]" />
               Votre activité mérite d’être vue
             </div>
-            <h1 className="max-w-3xl text-5xl leading-[1.02] font-semibold tracking-[-.055em] sm:text-6xl lg:text-[4.7rem]">
+            <h1 className="max-w-3xl text-[clamp(3rem,8vw,5.25rem)] leading-[.98] font-semibold tracking-[-.065em]">
               Faites découvrir
               <br />
               votre activité
               <br />
               <span className="text-[#ff9a3d]">en direct.</span>
             </h1>
-            <p className="mt-7 max-w-xl text-base leading-7 text-white/65 sm:text-lg">
+            <p className="mt-7 max-w-xl text-base leading-7 text-white/65 sm:text-lg sm:leading-8">
               OCD accompagne les entrepreneurs, commerçants et artisans pour présenter leurs produits et services en live, échanger avec le public et faire grandir leur visibilité.
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
@@ -75,46 +75,43 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="relative mx-auto w-full max-w-[530px] md:ml-auto">
-            <div className="absolute -inset-5 rounded-[2.5rem] bg-[#f47b00]/10 blur-3xl" />
-            <div className="relative rounded-[2rem] border border-white/10 bg-[#24211d] p-3 shadow-[0_40px_100px_-38px_rgba(0,0,0,.9)] sm:p-4">
-              <div className="relative min-h-[430px] overflow-hidden rounded-[1.45rem] bg-[radial-gradient(ellipse_at_70%_10%,rgba(244,123,0,.42),transparent_33%),linear-gradient(145deg,#534335_0%,#312a24_43%,#171512_100%)] p-5 sm:min-h-[490px] sm:p-7">
-                <div className="absolute inset-0 opacity-25" style={{ backgroundImage: "linear-gradient(135deg, transparent 48%, rgba(255,255,255,.13) 49%, transparent 50%)", backgroundSize: "28px 28px" }} />
-                <div className="relative flex items-center justify-between">
-                  <div className="inline-flex items-center gap-2 rounded-full bg-red-500 px-3 py-1.5 text-[10px] font-bold tracking-[.18em] text-white uppercase"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white" /> En direct</div>
-                  <div className="rounded-full border border-white/15 bg-black/25 px-3 py-1.5 text-[10px] tracking-[.13em] text-white/70 uppercase">Aperçu illustratif</div>
-                </div>
-                <div className="absolute inset-x-7 top-[20%] flex justify-center">
-                  <div className="relative flex h-[225px] w-[225px] items-center justify-center rounded-full border border-white/15 bg-[radial-gradient(circle_at_50%_42%,rgba(255,221,185,.35),rgba(244,123,0,.18)_43%,rgba(20,17,15,.15)_70%)] shadow-[0_0_70px_rgba(244,123,0,.18)] sm:h-[255px] sm:w-[255px]">
-                    <div className="absolute inset-5 rounded-full border border-dashed border-white/20" />
-                    <div className="relative flex h-[156px] w-[156px] flex-col items-center justify-center rounded-full border border-white/20 bg-[#29211b]/85 text-center shadow-2xl sm:h-[176px] sm:w-[176px]">
-                      <ShoppingBag className="mb-2 h-8 w-8 text-[#ff9a3d]" strokeWidth={1.5} />
-                      <span className="text-[10px] font-bold tracking-[.2em] text-white/55 uppercase">Votre marque</span>
-                      <span className="mt-1 text-lg font-semibold tracking-tight">en lumière</span>
-                    </div>
-                    <span className="absolute top-4 right-7 h-2 w-2 rounded-full bg-[#ffb65e] shadow-[0_0_15px_#ffb65e]" />
-                    <span className="absolute bottom-8 left-1 h-1.5 w-1.5 rounded-full bg-white/80" />
+          <div className="relative mx-auto w-full max-w-[500px] md:ml-auto">
+            <div className="absolute -inset-5 rounded-[2.5rem] bg-[#f47b00]/15 blur-3xl" />
+            <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] border border-white/10 bg-[#30251d] shadow-[0_40px_100px_-38px_rgba(0,0,0,.9)] sm:rounded-[2.5rem]">
+              <Image
+                src="/images/Bovann.jpeg"
+                alt="Bovann, visage de la communauté OCD"
+                fill
+                priority
+                sizes="(max-width: 768px) 100vw, 42vw"
+                className="object-cover object-[center_32%]"
+              />
+              <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-[#171512] via-[#171512]/10 to-black/20" />
+              <div className="absolute inset-x-5 top-5 flex items-center justify-between gap-3 sm:inset-x-7 sm:top-7">
+                <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/35 px-3.5 py-2 text-[10px] font-bold tracking-[.16em] text-white uppercase backdrop-blur-md">
+                  <span className="h-2 w-2 rounded-full bg-[#ff684f]" />
+                  L’esprit du direct
+                </span>
+                <span className="rounded-full border border-white/15 bg-black/25 px-3 py-2 text-[10px] font-medium tracking-[.12em] text-white/80 uppercase backdrop-blur-md">
+                  Communauté OCD
+                </span>
+              </div>
+              <div className="absolute inset-x-5 bottom-5 rounded-2xl border border-white/15 bg-[#171512]/65 p-5 backdrop-blur-xl sm:inset-x-7 sm:bottom-7 sm:p-6">
+                <div className="flex items-end justify-between gap-4">
+                  <div>
+                    <p className="text-[10px] font-semibold tracking-[.18em] text-[#ffad62] uppercase">La vitrine prend vie</p>
+                    <p className="mt-2 text-xl font-semibold tracking-tight text-white sm:text-2xl">Présentez. Échangez.</p>
+                    <p className="mt-1 text-sm text-white/65">Faites découvrir votre activité.</p>
                   </div>
-                </div>
-                <div className="absolute right-5 bottom-[104px] flex flex-col gap-3 text-white/80">
-                  <span className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-black/25"><MessageCircle className="h-4 w-4" /></span>
-                  <span className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-black/25"><ShoppingBag className="h-4 w-4" /></span>
-                </div>
-                <div className="absolute right-5 bottom-[195px] rounded-xl border border-white/10 bg-black/25 p-3 text-[10px] text-white/75 backdrop-blur-sm">
-                  <div className="mb-1 flex items-center gap-2"><span className="h-5 w-5 rounded-full bg-[#e7a96d]" /><span className="font-medium text-white">Une question ?</span></div>
-                  Comment commander ?
-                </div>
-                <div className="absolute inset-x-5 bottom-5 rounded-2xl border border-white/10 bg-[#171512]/80 p-4 backdrop-blur-md sm:inset-x-7 sm:bottom-7">
-                  <div className="flex items-center justify-between gap-4">
-                    <div><p className="text-[10px] font-semibold tracking-[.16em] text-[#ffad62] uppercase">La vitrine prend vie</p><p className="mt-1 text-sm font-medium text-white">Présentez. Échangez. Restez joignable.</p></div>
-                    <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#f47b00] text-white"><Video className="h-4 w-4" /></div>
-                  </div>
+                  <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[#f47b00] text-white shadow-lg shadow-black/20">
+                    <Video className="h-5 w-5" />
+                  </span>
                 </div>
               </div>
             </div>
-            <div className="absolute -bottom-5 -left-4 hidden items-center gap-3 rounded-2xl border border-white/10 bg-[#292520] px-4 py-3 shadow-xl sm:flex">
+            <div className="absolute -bottom-5 -left-3 hidden items-center gap-3 rounded-2xl border border-white/10 bg-[#292520] px-4 py-3 shadow-xl sm:flex">
               <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#f47b00]/15 text-[#ff9a3d]"><Radio className="h-5 w-5" /></span>
-              <div><p className="text-xs font-semibold text-white">Ensemble, en direct</p><p className="text-[10px] text-white/45">Une expérience à préparer</p></div>
+              <div><p className="text-xs font-semibold text-white">Ensemble, en direct</p><p className="text-[10px] text-white/55">Une expérience à préparer</p></div>
             </div>
           </div>
         </div>
@@ -132,14 +129,14 @@ export default function HomePage() {
           <p className="max-w-2xl text-base leading-7 text-[#655e56] md:justify-self-end md:text-lg">Votre savoir-faire mérite plus qu’une publication qui défile. OCD vous accompagne dans une présentation commerciale en direct, pour montrer vos produits, répondre aux questions et faciliter la prise de contact avec de nouveaux clients.</p>
         </div>
         <div className="mt-12 grid gap-4 sm:grid-cols-3">
-          {[{ n: "01", title: "Montrer", text: "Mettez des visages, des détails et une histoire derrière votre offre." }, { n: "02", title: "Échanger", text: "Répondez aux questions du public pendant la présentation." }, { n: "03", title: "Convertir", text: "Poursuivez la conversation après le direct et suivez vos prospects." }].map((item) => <div key={item.n} className="rounded-2xl border border-[#e9e3dc] bg-white p-6"><span className="text-xs font-bold tracking-[.18em] text-[#f47b00]">{item.n}</span><h3 className="mt-4 text-xl font-semibold tracking-tight">{item.title}</h3><p className="mt-2 text-sm leading-6 text-[#716a62]">{item.text}</p></div>)}
+          {[{ n: "01", title: "Montrer", text: "Mettez des visages, des détails et une histoire derrière votre offre." }, { n: "02", title: "Échanger", text: "Répondez aux questions du public pendant la présentation." }, { n: "03", title: "Convertir", text: "Poursuivez la conversation après le direct et suivez vos prospects." }].map((item) => <div key={item.n} className="group rounded-3xl border border-[#e9e3dc] bg-white p-6 shadow-[0_12px_38px_-30px_rgba(55,39,25,.35)] transition duration-300 hover:-translate-y-1 hover:border-[#f47b00]/35 hover:shadow-[0_24px_50px_-32px_rgba(55,39,25,.3)]"><span className="grid h-10 w-10 place-items-center rounded-xl bg-[#fff1e2] text-xs font-bold tracking-[.12em] text-[#c56200] transition group-hover:bg-[#f47b00] group-hover:text-white">{item.n}</span><h3 className="mt-5 text-xl font-semibold tracking-tight">{item.title}</h3><p className="mt-2 text-sm leading-6 text-[#716a62]">{item.text}</p></div>)}
         </div>
       </section>
 
       <section id="comment-ca-marche" className="bg-[#f1ece5] py-20 md:py-28">
         <div className="container-bovan">
           <div className="max-w-2xl"><p className="eyebrow">Simple, de la réservation au suivi</p><h2 className="heading-2 mt-3">Comment ça <span className="text-[#f47b00]">marche ?</span></h2><p className="mt-4 leading-7 text-[#655e56]">Une équipe vous accompagne à chaque étape. Vous restez au cœur de la présentation : personne ne connaît votre activité mieux que vous.</p></div>
-          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{steps.map((step) => <article key={step.number} className="relative rounded-2xl bg-white p-6 shadow-[0_14px_50px_-42px_rgba(55,39,25,.5)]"><span className="text-xs font-bold tracking-[.18em] text-[#f47b00]">ÉTAPE {step.number}</span><h3 className="mt-5 text-lg font-semibold">{step.title}</h3><p className="mt-2 text-sm leading-6 text-[#716a62]">{step.text}</p></article>)}</div>
+          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{steps.map((step) => <article key={step.number} className="relative rounded-3xl border border-white bg-white/90 p-6 shadow-[0_14px_50px_-42px_rgba(55,39,25,.5)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_55px_-38px_rgba(55,39,25,.35)]"><span className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[.16em] text-[#c56200]"><span className="h-px w-5 bg-[#f47b00]/50" /> ÉTAPE {step.number}</span><h3 className="mt-5 text-lg font-semibold tracking-tight">{step.title}</h3><p className="mt-2 text-sm leading-6 text-[#716a62]">{step.text}</p></article>)}</div>
         </div>
       </section>
 
@@ -165,7 +162,7 @@ export default function HomePage() {
       </section>
 
       <section className="container-bovan pb-20 md:pb-28">
-        <div className="relative overflow-hidden rounded-[2rem] bg-[#e86f00] px-6 py-12 text-white sm:px-10 md:px-14 md:py-16">
+        <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#f47b00] to-[#c95600] px-6 py-12 text-white shadow-[0_30px_75px_-48px_rgba(158,65,0,.75)] sm:px-10 md:px-14 md:py-16">
           <div aria-hidden="true" className="absolute -top-32 -right-20 h-80 w-80 rounded-full border border-white/20"/><div aria-hidden="true" className="absolute -top-20 -right-8 h-56 w-56 rounded-full border border-white/20"/>
           <div className="relative z-10 flex flex-col gap-8 md:flex-row md:items-end md:justify-between"><div className="max-w-2xl"><p className="text-xs font-bold tracking-[.18em] text-white/75 uppercase">À votre tour</p><h2 className="mt-3 text-3xl leading-tight font-semibold tracking-[-.04em] sm:text-4xl">Votre activité a une histoire.<br className="hidden sm:block"/> Faisons-la découvrir.</h2><p className="mt-4 max-w-lg text-sm leading-6 text-white/85">Parlez-nous de votre activité et de la formule qui vous intéresse. Nous confirmerons ensemble les disponibilités et les modalités.</p></div><Link href="/contact#reservation" className="inline-flex min-h-13 shrink-0 items-center justify-center gap-2 rounded-full bg-white px-6 py-3.5 font-semibold text-[#b74f00] transition hover:-translate-y-0.5 hover:bg-[#fff4e9]">Parler à OCD <ArrowRight className="h-4 w-4" /></Link></div>
         </div>
